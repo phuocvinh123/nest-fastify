@@ -1,0 +1,1 @@
+export declare function Headers(name: string): <TFunction extends object, Y>(target: object | TFunction, propertyKey?: string | symbol | undefined, descriptor?: TypedPropertyDescriptor<Y> | undefined) => void;
