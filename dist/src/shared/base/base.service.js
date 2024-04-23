@@ -30,7 +30,7 @@ class BaseService {
             .andWhere('base.isDeleted = FALSE');
         if (this.listInnerJoin.length) {
             this.listInnerJoin.forEach((innerJoin) => {
-                request.innerJoin(`base.${innerJoin.key}`, innerJoin.key, `${innerJoin.key}.${innerJoin.condition}`);
+                request.innerJoinAndSelect(`base.${innerJoin.key}`, innerJoin.key, `${innerJoin.key}.${innerJoin.condition}`);
             });
         }
         if (this.listJoin.length) {
@@ -183,6 +183,11 @@ class BaseService {
             this.listJoin.forEach((key) => {
                 const checkKey = key.split('.');
                 request.leftJoinAndSelect(`${checkKey.length === 1 ? 'base.' + checkKey[0] : key}`, checkKey[checkKey.length - 1]);
+            });
+        }
+        if (this.listInnerJoin.length) {
+            this.listInnerJoin.forEach((innerJoin) => {
+                request.innerJoinAndSelect(`base.${innerJoin.key}`, innerJoin.key, `${innerJoin.key}.${innerJoin.condition}`);
             });
         }
         if (listJoin.length) {

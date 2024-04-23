@@ -27,6 +27,7 @@ export class AppController {
         perPage: 10,
         filter: `{"buildingAddress.province":"${address ? address : ""}"}`
       });
+      console.log(bu)
     const [ex] = await this.buildingService.findAll({ perPage: 100 });
     const uniqueProvinces = [...new Set(ex.map(i => i.buildingAddress.province))];
     const data={
@@ -79,13 +80,13 @@ export class AppController {
     };
   }
 
-  @Get('/detail/:id')
-  @Render('detail')
-  async detail(@Param('id') id: number): Promise<any>{
-    console.log(typeof id);
-    
+    @Get('/detail1/:id')
+    @Render('detail1')
+    async detail(@Param('id') id: string): Promise<any>{
+      const bu = await this.buildingService.findOne(id,[])
+    console.log(bu);
     return {
-      id
+      bu
     }
   }
 

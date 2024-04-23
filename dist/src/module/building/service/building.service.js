@@ -25,9 +25,6 @@ let BuildingService = class BuildingService extends _shared_1.BaseService {
         this.listJoin = ['buildingContent', 'buildingAddress'];
         this.listInnerJoin = [{ key: 'rooms', condition: 'isPublic = TRUE' }];
     }
-    async findOne() {
-        return this.repo.getBuildings();
-    }
 };
 exports.BuildingService = BuildingService;
 exports.BuildingService = BuildingService = __decorate([

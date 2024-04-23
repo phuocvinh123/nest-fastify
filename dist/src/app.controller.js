@@ -26,6 +26,7 @@ let AppController = class AppController {
             perPage: 10,
             filter: `{"buildingAddress.province":"${address ? address : ""}"}`
         });
+        console.log(bu);
         const [ex] = await this.buildingService.findAll({ perPage: 100 });
         const uniqueProvinces = [...new Set(ex.map(i => i.buildingAddress.province))];
         const data = {
@@ -78,9 +79,10 @@ let AppController = class AppController {
         };
     }
     async detail(id) {
-        console.log(typeof id);
+        const bu = await this.buildingService.findOne(id, []);
+        console.log(bu);
         return {
-            id
+            bu
         };
     }
 };
@@ -95,12 +97,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "root", null);
 __decorate([
-    (0, common_1.Get)('/detail/:id'),
-    (0, common_1.Render)('detail'),
+    (0, common_1.Get)('/detail1/:id'),
+    (0, common_1.Render)('detail1'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "detail", null);
 exports.AppController = AppController = __decorate([

@@ -1,6 +1,6 @@
 import { PaginationResponsesDto } from '@shared';
 import { AddressDistrict } from '@model';
-declare const AddressDistrictDto_base: import("@nestjs/common").Type<Partial<Omit<AddressDistrict, "name" | "isDeleted" | "createdAt" | "updatedAt" | "code" | "codeProvince">>>;
+declare const AddressDistrictDto_base: import("@nestjs/common").Type<Partial<Omit<AddressDistrict, "name" | "code" | "isDeleted" | "createdAt" | "updatedAt" | "codeProvince">>>;
 export declare class AddressDistrictDto extends AddressDistrictDto_base {
     readonly code: string;
 }

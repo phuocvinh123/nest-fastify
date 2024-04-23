@@ -16,7 +16,7 @@ export class BuildingService extends BaseService<Building> {
     this.listQuery = ['name'];
     this.listJoin = ['buildingContent', 'buildingAddress'];
     this.listInnerJoin = [{ key: 'rooms', condition: 'isPublic = TRUE' }];
-    // this.listInnerJoin=[];
+    // this.listInnerJoin =[];
   }
 
   /**
@@ -24,7 +24,11 @@ export class BuildingService extends BaseService<Building> {
    * @returns Building
    *
    */
-  async findOne(): Promise<any> {
-    return this.repo.getBuildings();
-  }
+  // async findOne(): Promise<any> {
+  //   return this.repo.getBuildings();
+  // }
+
+  // async findById(id: number) {
+  //   return this.repo.findOne({where:{id}});
+  // }
 }

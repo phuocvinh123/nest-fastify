@@ -55,7 +55,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
 
     if (this.listInnerJoin.length) {
       this.listInnerJoin.forEach((innerJoin) => {
-        request.innerJoin(`base.${innerJoin.key}`, innerJoin.key, `${innerJoin.key}.${innerJoin.condition}`);
+        request.innerJoinAndSelect(`base.${innerJoin.key}`, innerJoin.key, `${innerJoin.key}.${innerJoin.condition}`);
       });
     }
     if (this.listJoin.length) {
@@ -225,6 +225,11 @@ export abstract class BaseService<T extends ObjectLiteral> {
           `${checkKey.length === 1 ? 'base.' + checkKey[0] : key}`,
           checkKey[checkKey.length - 1],
         );
+      });
+    }
+    if (this.listInnerJoin.length) {
+      this.listInnerJoin.forEach((innerJoin) => {
+        request.innerJoinAndSelect(`base.${innerJoin.key}`, innerJoin.key, `${innerJoin.key}.${innerJoin.condition}`);
       });
     }
     if (listJoin.length) {

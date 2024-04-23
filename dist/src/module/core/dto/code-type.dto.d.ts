@@ -7,7 +7,7 @@ export declare class CreateCodeTypeRequestDto extends CreateCodeTypeRequestDto_b
 declare const UpdateCodeTypeRequestDto_base: import("@nestjs/common").Type<Pick<CodeType, "name">>;
 export declare class UpdateCodeTypeRequestDto extends UpdateCodeTypeRequestDto_base {
 }
-declare const CodeTypeDto_base: import("@nestjs/common").Type<Partial<Omit<CodeType, "items" | "isDeleted" | "createdAt" | "updatedAt">>>;
+declare const CodeTypeDto_base: import("@nestjs/common").Type<Partial<Omit<CodeType, "isDeleted" | "createdAt" | "updatedAt" | "items">>>;
 export declare class CodeTypeDto extends CodeTypeDto_base {
 }
 declare const CodeTypeResponseDto_base: import("@nestjs/common").Type<Partial<DefaultResponsesDto>>;
@@ -18,7 +18,7 @@ declare const ListCodeTypeResponseDto_base: import("@nestjs/common").Type<Partia
 export declare class ListCodeTypeResponseDto extends ListCodeTypeResponseDto_base {
     readonly data: CodeTypeDto[];
 }
-declare const CodeTypeRelationshipDto_base: import("@nestjs/common").Type<Partial<Omit<CodeType, "items" | "isDeleted" | "createdAt" | "updatedAt">>>;
+declare const CodeTypeRelationshipDto_base: import("@nestjs/common").Type<Partial<Omit<CodeType, "isDeleted" | "createdAt" | "updatedAt" | "items">>>;
 export declare class CodeTypeRelationshipDto extends CodeTypeRelationshipDto_base {
     readonly items?: CodeDto[];
 }

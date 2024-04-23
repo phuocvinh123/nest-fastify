@@ -8,5 +8,4 @@ export declare const P_BUILDING_DELETE = "275ebda7-3e03-4c93-b352-baa7705528aa";
 export declare class BuildingService extends BaseService<Building> {
     repo: BuildingRepository;
     constructor(repo: BuildingRepository);
-    findOne(): Promise<any>;
 }
