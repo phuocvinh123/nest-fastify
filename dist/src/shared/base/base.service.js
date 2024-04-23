@@ -24,6 +24,7 @@ class BaseService {
         const filter = typeof paginationQuery.filter === 'string' ? JSON.parse(paginationQuery.filter) : paginationQuery.filter;
         const skip = typeof paginationQuery.skip === 'string' ? JSON.parse(paginationQuery.skip) : paginationQuery.skip;
         const extend = typeof paginationQuery.extend === 'string' ? JSON.parse(paginationQuery.extend) : paginationQuery.extend;
+        console.log(filter);
         const request = this.repo
             .createQueryBuilder('base')
             .andWhere('base.isDeleted = FALSE');
@@ -72,10 +73,21 @@ class BaseService {
                         }
                     }
                     else if (typeof filter[key] !== 'object') {
-                        if (filter[key] === 'NULL')
-                            qb = qb.andWhere(`base.${key} IS NULL`);
-                        else
+                        let checkFilter = key.split('.');
+                        if (checkFilter.length > 1) {
+                            if (filter[key] === 'NULL') {
+                                qb = qb.andWhere(`${(key)} IS NULL`);
+                            }
+                            else if (filter[key] !== "") {
+                                qb = qb.andWhere(`${(key)}=:${key}`, { [key]: filter[key] });
+                            }
+                            else {
+                                qb = qb.andWhere(`${(key)} IS NOT NULL`);
+                            }
+                        }
+                        else {
                             qb = qb.andWhere(`base.${(0, StringUtils_1.snakeCase)(key)}=:${key}`, { [key]: filter[key] });
+                        }
                     }
                 });
                 if (skip && Object.keys(skip).length) {

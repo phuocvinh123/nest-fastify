@@ -21,9 +21,9 @@ let BuildingService = class BuildingService extends _shared_1.BaseService {
     constructor(repo) {
         super(repo);
         this.repo = repo;
-        this.listQuery = ['name', 'address'];
+        this.listQuery = ['name'];
         this.listJoin = ['buildingContent', 'buildingAddress'];
-        this.listInnerJoin = [];
+        this.listInnerJoin = [{ key: 'rooms', condition: 'isPublic = TRUE' }];
     }
     async findOne() {
         return this.repo.getBuildings();

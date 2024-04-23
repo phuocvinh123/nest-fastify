@@ -1,6 +1,64 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.swiper {
+  @apply mx-auto;
+}
+
+.swiper-slide {
+  @apply text-center;
+  @apply flex;
+  @apply justify-center;
+  @apply items-center;
+  @apply cursor-grab;
+}
+
+.swiper-button-disabled {
+  @apply hidden;
+}
+
+.swiper-slide>img {
+  @apply block;
+  @apply w-full;
+  @apply h-full;
+  @apply object-cover;
+}
+
+.swiper-slide-thumb-active {
+  @apply border-2;
+  @apply border-blue-400;
+}
+
+.custom-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: url('path_to_blank_image.png') no-repeat right center;
+  padding-right: 20px;
+  border: none;
+  outline: none;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+
+.swiper-pagination {
+  width: auto;
+  height: 20px;
+}
+
+.swiper-pagination-bullet {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(189, 195, 199);
+}
+
+.swiper-pagination-bullet-active {
+  background-color: darkred;
+}
+
 .swal2 {
   &-html-container { @apply !m-6; }
   &-actions { @apply !mt-0 !mb-4; }

@@ -21,10 +21,13 @@ let AppController = class AppController {
         this.buildingService = buildingService;
     }
     async root(address) {
-        const [bu] = await this.buildingService.findAll({ page: 1, perPage: 10, fullTextSearch: address });
+        const [bu] = await this.buildingService.findAll({
+            page: 1,
+            perPage: 10,
+            filter: `{"buildingAddress.province":"${address ? address : ""}"}`
+        });
         const [ex] = await this.buildingService.findAll({ perPage: 100 });
         const uniqueProvinces = [...new Set(ex.map(i => i.buildingAddress.province))];
-        console.log(uniqueProvinces);
         const data = {
             items: [
                 {
@@ -74,6 +77,12 @@ let AppController = class AppController {
             bu, data, uniqueProvinces
         };
     }
+    async detail(id) {
+        console.log(typeof id);
+        return {
+            id
+        };
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -85,6 +94,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "root", null);
+__decorate([
+    (0, common_1.Get)('/detail/:id'),
+    (0, common_1.Render)('detail'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "detail", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [_service_1.BuildingService])

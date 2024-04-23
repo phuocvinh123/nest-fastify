@@ -20,13 +20,15 @@ export class AppController {
   async root(@Query('address') address: string ): Promise<any> {
     // const {data} = await this.buildingService.findOne();
     // console.log(data.map(i => i.id));
-    const [bu] = await this.buildingService.findAll({ page: 1, perPage: 10, fullTextSearch: address });
+    // const filter = address === '' ? undefined : JSON.stringify({ address });
+    const [bu] = await this.buildingService.findAll(
+      {
+        page: 1,
+        perPage: 10,
+        filter: `{"buildingAddress.province":"${address ? address : ""}"}`
+      });
     const [ex] = await this.buildingService.findAll({ perPage: 100 });
     const uniqueProvinces = [...new Set(ex.map(i => i.buildingAddress.province))];
-    console.log(ex);
-    // console.log(uniqueProvinces);
-    // console.log(bu.map((i)=>i.utilities));
-    // console.log(bu.map((i)=>i.buildingAddress.district));
     const data={
       items: [
         {
@@ -76,6 +78,17 @@ export class AppController {
       bu,data,uniqueProvinces
     };
   }
+
+  @Get('/detail/:id')
+  @Render('detail')
+  async detail(@Param('id') id: number): Promise<any>{
+    console.log(typeof id);
+    
+    return {
+      id
+    }
+  }
+
 
   // @Get('/en')
   // @Render('index')

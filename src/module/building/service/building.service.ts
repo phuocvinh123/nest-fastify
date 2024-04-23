@@ -13,10 +13,10 @@ export const P_BUILDING_DELETE = '275ebda7-3e03-4c93-b352-baa7705528aa';
 export class BuildingService extends BaseService<Building> {
   constructor(public repo: BuildingRepository) {
     super(repo);
-    this.listQuery = ['name','address'];
+    this.listQuery = ['name'];
     this.listJoin = ['buildingContent', 'buildingAddress'];
-    // this.listInnerJoin = [{ key: 'rooms', condition: 'isPublic = TRUE' }];
-    this.listInnerJoin=[];
+    this.listInnerJoin = [{ key: 'rooms', condition: 'isPublic = TRUE' }];
+    // this.listInnerJoin=[];
   }
 
   /**

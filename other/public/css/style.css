@@ -1622,6 +1622,9 @@ video {
   .md\:gap-10 {
     gap: 2.5rem;
   }
+  .md\:rounded-none {
+    border-radius: 0;
+  }
   .md\:rounded-l-2xl {
     border-top-left-radius: 1rem;
     border-bottom-left-radius: 1rem;
@@ -1797,8 +1800,8 @@ video {
   .xl\:h-96 {
     height: 24rem;
   }
-  .xl\:h-\[1027\.333px\] {
-    height: 1027.333px;
+  .xl\:h-\[1028px\] {
+    height: 1028px;
   }
   .xl\:h-\[450px\] {
     height: 450px;

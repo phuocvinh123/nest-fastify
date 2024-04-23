@@ -312,19 +312,19 @@ const g = (e, t) => {
 },
     C = () => {
         const e = {
-            loop: true,
-            autoHeight: true,
+            loop: !0,
+            autoHeight: !0,
             spaceBetween: 30,
             autoplay: {
-                delay: 5000
+                delay: 5e3
             }
         };
         new Swiper(".mySwiper", {
             ...e,
-            navigation: false,
+            navigation: !1,
             effect: "coverflow",
-            grabCursor: true,
-            centeredSlides: true,
+            grabCursor: !0,
+            centeredSlides: !0,
             coverflowEffect: {
                 rotate: 0,
                 stretch: 0,
@@ -348,11 +348,9 @@ const g = (e, t) => {
             },
             pagination: {
                 el: ".swiper-pagination",
-                clickable: true
+                clickable: !0
             }
-        });
-
-        new Swiper(".mySwiperContent", {
+        }), new Swiper(".mySwiperContent", {
             ...e,
             slidesPerView: 1,
             navigation: {
@@ -364,15 +362,13 @@ const g = (e, t) => {
                 slideChangeTransitionStart: n => g(n.slides[n.activeIndex], 0)
             }
         });
-
         var t = new Swiper(".swiperContent", {
             spaceBetween: 10,
             slidesPerView: 4,
-            freeMode: true,
-            watchSlidesProgress: true
+            freeMode: !0,
+            watchSlidesProgress: !0
         });
-
-        new Swiper(".swiperContent2", {
+        return new Swiper(".swiperContent2", {
             spaceBetween: 10,
             navigation: {
                 nextEl: ".swiper-button-next-content",
@@ -381,99 +377,9 @@ const g = (e, t) => {
             thumbs: {
                 swiper: t
             }
-        });
-
-        return t;
+        }), t
     };
 
-function v() {
-    const e = {
-        items: [{
-            imageSrc: "/images/swpier1.png",
-            title: "Các xu hướng lựa chọn thiết kế căn hộ lý tưởng năm 2022"
-        }, {
-            imageSrc: "/images/swpier2.png",
-            title: "Những căn hộ đơn giản hiện đại có phải là xu hướng mới?"
-        }, {
-            imageSrc: "/images/swpier3.png",
-            title: "Phong cách thiết kế căn hộ nào sẽ là xu hướng năm 2023?"
-        }, {
-            imageSrc: "/images/swpier1.png",
-            title: "Các xu hướng lựa chọn thiết kế căn hộ lý tưởng năm 2022"
-        }, {
-            imageSrc: "/images/swpier2.png",
-            title: "Những căn hộ đơn giản hiện đại có phải là xu hướng mới?"
-        }, {
-            imageSrc: "/images/swpier3.png",
-            title: "Phong cách thiết kế căn hộ nào sẽ là xu hướng năm 2023?"
-        }]
-    },
-        t = document.getElementById("swpier-template").innerHTML,
-        i = Handlebars.compile(t)(e);
-    document.getElementById("swpier-container").innerHTML = i
-}
-
-function O() {
-    const e = {
-        items: [{
-            imageSrc: "/images/pexels-vecislavas-popa-1571469 2.png",
-            title: "An Khánh",
-            room: "Số phòng: 44",
-            district: "Quận: Tân Bình",
-            type: "Loại: Motel",
-            address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
-            introduce: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        }, {
-            imageSrc: "/images/pexels-vecislavas-popa-1571469 2.png",
-            title: "An Khánh",
-            room: "Số phòng: 44",
-            district: "Quận: Tân Bình",
-            type: "Loại: Motel",
-            address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
-            introduce: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        }, {
-            imageSrc: "/images/pexels-vecislavas-popa-1571469 2.png",
-            title: "An Khánh",
-            room: "Số phòng: 44",
-            district: "Quận: Tân Bình",
-            type: "Loại: Motel",
-            address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
-            introduce: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        }, {
-            imageSrc: "/images/pexels-vecislavas-popa-1571469 2.png",
-            title: "An Khánh",
-            room: "Số phòng: 44",
-            district: "Quận: Tân Bình",
-            type: "Loại: Motel",
-            address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
-            introduce: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        }]
-    },
-        t = document.getElementById("room-template").innerHTML,
-        i = Handlebars.compile(t)(e);
-    document.getElementById("room-container").innerHTML = i
-}
-
-function k() {
-    const e = {
-        items: [{
-            title: "Uhouse",
-            Content: "Mang lại nhiều tiện ích cho khách thuê",
-            imageSrc: "/images/property-1.png"
-        }, {
-            title: "Uhouse",
-            Content: " Nền tảng quản lý vận hành tòa nhà tiên tiến",
-            imageSrc: "/images/property-1.png"
-        }, {
-            title: "Uhouse",
-            Content: "Tiết kiệm chi phí hiệu quả",
-            imageSrc: "/images/property-1.png"
-        }]
-    },
-        t = document.getElementById("right-template").innerHTML,
-        i = Handlebars.compile(t)(e);
-    document.getElementById("right-container").innerHTML = i
-}
 window.API = p;
 window.Message = y;
 w();
@@ -505,25 +411,25 @@ document.addEventListener("DOMContentLoaded", function () {
 const f = document.querySelector(".btn-show-image");
 f == null || f.addEventListener("click", _);
 
-const provinceSelect = document.getElementById('selectAddress');
+function B() {
+    const provinceSelect = document.getElementById('selectAddress');
 
-provinceSelect.addEventListener('change', function () {
-    const selectedProvince = provinceSelect.value;
-    window.location.href = `http://localhost:3000/?address=${selectedProvince}`;
-});
-window.onload = function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const address = urlParams.get('address');
-    if (address) {
-        const option = provinceSelect.querySelector(`option[value="${address}"]`);
-        if (option) {
-            provinceSelect.value = address;
+    provinceSelect?.addEventListener('change', function () {
+        const selectedProvince = provinceSelect.value;
+        window.location.href = `http://localhost:3000/?address=${selectedProvince}`;
+    });
+    window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const address = urlParams.get('address');
+        if (address) {
+            const option = provinceSelect?.querySelector(`option[value="${address}"]`);
+            if (option) {
+                provinceSelect.value = address;
+            }
         }
-    }
-};
+    };
+}
 
 A();
+B();
 C();
-v();
-O();
-k();
