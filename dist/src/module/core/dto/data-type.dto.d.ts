@@ -6,7 +6,7 @@ export declare class CreateDataTypeRequestDto extends CreateDataTypeRequestDto_b
 declare const UpdateDataTypeRequestDto_base: import("@nestjs/common").Type<Pick<DataType, "name">>;
 export declare class UpdateDataTypeRequestDto extends UpdateDataTypeRequestDto_base {
 }
-declare const DataTypeDto_base: import("@nestjs/common").Type<Partial<Omit<DataType, "isDeleted" | "createdAt" | "updatedAt" | "items">>>;
+declare const DataTypeDto_base: import("@nestjs/common").Type<Partial<Omit<DataType, "items" | "isDeleted" | "createdAt" | "updatedAt">>>;
 export declare class DataTypeDto extends DataTypeDto_base {
 }
 declare const DataTypeResponseDto_base: import("@nestjs/common").Type<Partial<DefaultResponsesDto>>;

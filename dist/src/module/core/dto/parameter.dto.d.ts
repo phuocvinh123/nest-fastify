@@ -1,6 +1,6 @@
 import { DefaultResponsesDto, PaginationResponsesDto } from '@shared';
 import { Parameter } from '@model';
-declare const CreateParameterRequestDto_base: import("@nestjs/common").Type<Pick<Parameter, "vn" | "code" | "en">>;
+declare const CreateParameterRequestDto_base: import("@nestjs/common").Type<Pick<Parameter, "code" | "vn" | "en">>;
 export declare class CreateParameterRequestDto extends CreateParameterRequestDto_base {
 }
 declare const UpdateParameterRequestDto_base: import("@nestjs/common").Type<Partial<CreateParameterRequestDto>>;

@@ -4,7 +4,7 @@ declare const CreatePostRequestDto_base: import("@nestjs/common").Type<Pick<Post
 export declare class CreatePostRequestDto extends CreatePostRequestDto_base {
     translations?: CreatePostTranslationRequestDto[];
 }
-declare const CreatePostTranslationRequestDto_base: import("@nestjs/common").Type<Pick<PostTranslation, "id" | "content" | "name" | "description" | "slug" | "language">>;
+declare const CreatePostTranslationRequestDto_base: import("@nestjs/common").Type<Pick<PostTranslation, "id" | "description" | "name" | "content" | "language" | "slug">>;
 export declare class CreatePostTranslationRequestDto extends CreatePostTranslationRequestDto_base {
 }
 declare const UpdatePostRequestDto_base: import("@nestjs/common").Type<Partial<CreatePostRequestDto>>;

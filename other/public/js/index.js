@@ -411,25 +411,141 @@ document.addEventListener("DOMContentLoaded", function () {
 const f = document.querySelector(".btn-show-image");
 f == null || f.addEventListener("click", _);
 
-function B() {
+function changeAddressSelect() {
     const provinceSelect = document.getElementById('selectAddress');
-
-    provinceSelect?.addEventListener('change', function () {
-        const selectedProvince = provinceSelect.value;
-        window.location.href = `http://localhost:3000/?address=${selectedProvince}`;
-    });
-    window.onload = function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const address = urlParams.get('address');
-        if (address) {
-            const option = provinceSelect?.querySelector(`option[value="${address}"]`);
-            if (option) {
-                provinceSelect.value = address;
+    if (provinceSelect) {
+        provinceSelect.addEventListener('change', function () {
+            const selectedProvince = provinceSelect.value;
+            window.location.href = `http://localhost:3000/?address=${selectedProvince}`;
+        });
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const address = urlParams.get('address');
+            if (address) {
+                const option = document.querySelector(`option[value="${address}"]`);
+                if (option) {
+                    provinceSelect.value = address;
+                }
             }
         }
-    };
+    }
+
+}
+const filter = () => {
+    const search = document.getElementById('search');
+    const selectAddress = document.getElementById('selectAddress');
+    const selectType = document.getElementById('selectType');
+    const selectAcreage = document.getElementById('selectAcreage');
+    const selectRoomNumber = document.getElementById('selectRoomNumber');
+    const selectYear = document.getElementById('selectYear');
+    const btnFilter = document.getElementById('buttonFilter')
+
+    if (search || selectAddress || selectType || selectAcreage || selectRoomNumber) {
+        btnFilter.addEventListener('click', () => {
+            const selectPriceMin = document.querySelector('input[name="lowPrice"]:checked').value;
+            const selectPriceMax = document.querySelector('input[name="highPrice"]:checked').value;
+            const selectedProvince = selectAddress.value;
+            const selectedType = selectType.value;
+            const selectedAcreage = selectAcreage.value;
+            const selectedRoomNumber = selectRoomNumber.value;
+            const searchValue = search.value;
+            const selectedYear = selectYear.value;
+            const filter = {
+                province: selectedProvince,
+                type: selectedType,
+                year: selectedYear,
+                acreage: selectedAcreage,
+                bedroomTotal: selectedRoomNumber,
+                price: `${selectPriceMin ? selectPriceMin : ""}/${selectPriceMax ? selectPriceMax : ""}`,
+            };
+            const sort = ``;
+            const paginableParams = new URLSearchParams({
+                page: "1",
+                perPage: "10",
+                fullTextSearch: searchValue,
+                filter: JSON.stringify(filter), // Convert filter object to JSON string
+                sort: ""
+            });
+            window.location.href = `
+                http://localhost:3000/detail3?${paginableParams.toString()}
+            `;
+        })
+
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const filter = urlParams.get('filter');
+            const filterObject = JSON.parse(filter);
+            const search = urlParams.get('fullTextSearch');
+            const priceChecked = filterObject.price.split('/')
+            const radioButtonsMin = document.querySelectorAll('input[name="lowPrice"]');
+            const radioButtonsMax = document.querySelectorAll('input[name="highPrice"]');
+            function checked(arr, newValue) {
+                arr.forEach(function (radioButton) {
+                    if (radioButton.value === newValue) {
+                        radioButton.checked = true;
+                    } else {
+                        radioButton.checked = false;
+                    }
+                });
+            }
+            function setValueIfExists(ele, selector, value) {
+                const option = document.querySelector(selector);
+                if (option) {
+                    ele.value = value;
+                }
+            }
+            function setValueIDIfExists(ele, selector, value) {
+                const option = document.getElementById(selector);
+                if (option) {
+                    ele.value = value;
+                }
+            }
+            if (priceChecked) {
+                if (priceChecked[0]) {
+                    checked(radioButtonsMin, priceChecked[0]);
+                }
+                if (priceChecked[1]) {
+                    checked(radioButtonsMax, priceChecked[1]);
+                }
+            }
+
+            if (filterObject.province) {
+                setValueIfExists(selectAddress, `option[value="${filterObject.province}"]`, filterObject.province);
+            }
+            if (search) {
+                setValueIDIfExists(search, `search`, search);
+            }
+            if (filterObject.type) {
+                setValueIfExists(selectType, `option[value="${filterObject.type}"]`, filterObject.type);
+            }
+            if (filterObject.year) {
+                setValueIfExists(selectYear, `option[value="${filterObject.year}"]`, filterObject.year);
+            }
+            if (filterObject.acreage) {
+                setValueIfExists(selectAcreage, `option[value="${filterObject.acreage}"]`, filterObject.acreage);
+            }
+            if (filterObject.roomNumber) {
+                setValueIfExists(selectRoomNumber, `option[value="${filterObject.roomNumber}"]`, filterObject.roomNumber);
+            }
+        }
+    }
 }
 
+function togglePriceRadio() {
+    document.getElementById("priceRange")?.addEventListener("click", function (event) {
+        event.preventDefault();
+        var priceRadio = document.getElementById("pricetable");
+        if (priceRadio.style.display === "none") {
+            priceRadio.style.display = "block";
+            priceRadio.style.top = "50px";
+        } else {
+            priceRadio.style.display = "none";
+            priceRadio.style.display = "none";
+        }
+    });
+}
 A();
-B();
 C();
+changeAddressSelect();
+filter();
+togglePriceRadio();

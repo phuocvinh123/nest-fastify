@@ -1,6 +1,6 @@
 import { DefaultResponsesDto, PaginationResponsesDto } from '@shared';
 import { File } from '@model';
-declare const UpdateFileRequestDto_base: import("@nestjs/common").Type<Pick<File, "url" | "description">>;
+declare const UpdateFileRequestDto_base: import("@nestjs/common").Type<Pick<File, "description" | "url">>;
 export declare class UpdateFileRequestDto extends UpdateFileRequestDto_base {
 }
 declare const FileResponseDto_base: import("@nestjs/common").Type<Partial<DefaultResponsesDto>>;

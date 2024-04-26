@@ -16,6 +16,7 @@ exports.AppController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const _service_1 = require("./service");
+const _shared_1 = require("./shared");
 let AppController = class AppController {
     constructor(buildingService) {
         this.buildingService = buildingService;
@@ -78,11 +79,182 @@ let AppController = class AppController {
             bu, data, uniqueProvinces
         };
     }
-    async detail(id) {
+    async detail1(id) {
         const bu = await this.buildingService.findOne(id, []);
         console.log(bu);
         return {
             bu
+        };
+    }
+    async detail2(id) {
+        const room = await this.buildingService.findByRoomId(id);
+        let bu;
+        if (room) {
+            bu = await this.buildingService.findOne(room.buildingId.toString(), []);
+        }
+        console.log(room);
+        return {
+            room,
+            bu
+        };
+    }
+    async detail3(paginableParams) {
+        let filterObject = {};
+        const filterParam = paginableParams.filter;
+        if (filterParam) {
+            filterObject = JSON.parse(filterParam);
+        }
+        const { province, type, year, acreage, bedroomTotal, price } = filterObject;
+        const [bu] = await this.buildingService.findAll({
+            ...paginableParams,
+            filter: `{"buildingAddress.province":"${province ? province : ""}",
+    "type":"${type ? type : ""}",
+    "updated_at":"${year ? year : ""}",
+    "rooms.acreage":"${acreage ? acreage : ""}",
+    "rooms.bedroomTotal":"${bedroomTotal ? bedroomTotal : ""}",
+    "rooms.price":"${price !== "/" && price ? price : ""}"}
+    `,
+        });
+        const uniqueProvinces = [...new Set(bu.map(building => building.buildingAddress.province))];
+        const data = {
+            items: [{
+                    name: "An Khánh",
+                    size: 27,
+                    address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+                    price: 3.5
+                }, {
+                    name: "An Khánh",
+                    size: 27,
+                    address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+                    price: 3.5
+                }, {
+                    name: "An Khánh",
+                    size: 27,
+                    address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+                    price: 3.5
+                },
+                {
+                    name: "An Khánh",
+                    size: 27,
+                    address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+                    price: 3.5
+                }],
+            hirePrice: [
+                {
+                    content: "Tăng dần",
+                    value: "ASC"
+                },
+                {
+                    content: "Giảm dần",
+                    value: "DESC"
+                },
+            ],
+            roomAcreageArray: [
+                {
+                    content: "<30m2", value: "0/30"
+                },
+                {
+                    content: "30m2-50m2", value: "30/50"
+                },
+                {
+                    content: "50m2-60m2", value: "50/60"
+                },
+                {
+                    content: "60m2-70m2", value: "60/70"
+                },
+                {
+                    content: "70m2-80m2", value: "70/80"
+                },
+                {
+                    content: "80m2-90m2", value: "80/90"
+                },
+                {
+                    content: "100m2-1000m2", value: "100/1000"
+                },
+            ],
+            roomArrayYear: [
+                {
+                    content: "Cách đây 1 ngày", value: `${(0, _shared_1.getTheDate)(1)}`
+                },
+                {
+                    content: "Cách đây 3 ngày", value: `${(0, _shared_1.getTheDate)(3)}`
+                },
+                {
+                    content: "Cách đây 7 ngày", value: `${(0, _shared_1.getTheDate)(7)}`
+                },
+                {
+                    content: "Cách đây 15 ngày", value: `${(0, _shared_1.getTheDate)(15)}`
+                },
+                {
+                    content: "Cách đây 30 ngày", value: `${(0, _shared_1.getTheDate)(30)}`
+                },
+                {
+                    content: "Cách đây 60 ngày", value: `${(0, _shared_1.getTheDate)(60)}`
+                },
+            ],
+            roomBedroomTotal: [
+                {
+                    content: 0, value: 0
+                },
+                {
+                    content: 1, value: 1
+                },
+                {
+                    content: 2, value: 2
+                },
+                {
+                    content: 3, value: 3
+                },
+                {
+                    content: 4, value: 4
+                },
+                {
+                    content: 5, value: 5
+                },
+                {
+                    content: 6, value: 6
+                },
+            ],
+            roomTypeArray: [
+                {
+                    content: "Căn hộ dịch vụ", value: "CHDV"
+                },
+                {
+                    content: "Motel", value: "MOTEL"
+                },
+                {
+                    content: "Hotel", value: "HOTEL"
+                },
+                {
+                    content: "Phòng trọ", value: "MEZZANINE_ROOM"
+                },
+                {
+                    content: "Chung cư Mini", value: "STUDIO_ROOM"
+                },
+            ],
+            radioPrice: [
+                {
+                    content: "Tất cả", value: ""
+                },
+                {
+                    content: "1", value: 1000000
+                },
+                {
+                    content: "5", value: 5000000
+                },
+                {
+                    content: "7", value: 7000000
+                },
+                {
+                    content: "10", value: 10000000
+                },
+                {
+                    content: "30", value: 30000000
+                }
+            ]
+        };
+        return {
+            bu, data, uniqueProvinces,
         };
     }
 };
@@ -104,7 +276,25 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], AppController.prototype, "detail", null);
+], AppController.prototype, "detail1", null);
+__decorate([
+    (0, common_1.Get)('/detail2/:id'),
+    (0, common_1.Render)('detail2'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "detail2", null);
+__decorate([
+    (0, common_1.Get)('/detail3'),
+    (0, common_1.Render)('detail3'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [_shared_1.PaginationQueryDto]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "detail3", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [_service_1.BuildingService])

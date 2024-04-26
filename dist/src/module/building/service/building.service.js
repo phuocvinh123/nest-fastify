@@ -18,17 +18,22 @@ exports.P_BUILDING_CREATE = 'd9185449-e2ac-4e72-9c9f-25788c23d5ba';
 exports.P_BUILDING_UPDATE = '3d478437-949b-4ae7-9c21-79cabb1663a3';
 exports.P_BUILDING_DELETE = '275ebda7-3e03-4c93-b352-baa7705528aa';
 let BuildingService = class BuildingService extends _shared_1.BaseService {
-    constructor(repo) {
+    constructor(repo, rooms) {
         super(repo);
         this.repo = repo;
+        this.rooms = rooms;
         this.listQuery = ['name'];
         this.listJoin = ['buildingContent', 'buildingAddress'];
         this.listInnerJoin = [{ key: 'rooms', condition: 'isPublic = TRUE' }];
+    }
+    async findByRoomId(id) {
+        return this.rooms.findOne({ where: { id } });
     }
 };
 exports.BuildingService = BuildingService;
 exports.BuildingService = BuildingService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [_repository_1.BuildingRepository])
+    __metadata("design:paramtypes", [_repository_1.BuildingRepository,
+        _repository_1.RoomRepository])
 ], BuildingService);
 //# sourceMappingURL=building.service.js.map

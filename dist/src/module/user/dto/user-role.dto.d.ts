@@ -10,7 +10,7 @@ declare const ListUserRoleResponseDto_base: import("@nestjs/common").Type<Partia
 export declare class ListUserRoleResponseDto extends ListUserRoleResponseDto_base {
     readonly data: UserRoleDto[];
 }
-declare const UserRoleDto_base: import("@nestjs/common").Type<Partial<Omit<UserRole, "users" | "isDeleted" | "createdAt" | "updatedAt">>>;
+declare const UserRoleDto_base: import("@nestjs/common").Type<Partial<Omit<UserRole, "isDeleted" | "createdAt" | "updatedAt" | "users">>>;
 export declare class UserRoleDto extends UserRoleDto_base {
 }
 declare const PermissionResponseDto_base: import("@nestjs/common").Type<Partial<DefaultResponsesDto>>;

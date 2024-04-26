@@ -24,7 +24,6 @@ class BaseService {
         const filter = typeof paginationQuery.filter === 'string' ? JSON.parse(paginationQuery.filter) : paginationQuery.filter;
         const skip = typeof paginationQuery.skip === 'string' ? JSON.parse(paginationQuery.skip) : paginationQuery.skip;
         const extend = typeof paginationQuery.extend === 'string' ? JSON.parse(paginationQuery.extend) : paginationQuery.extend;
-        console.log(filter);
         const request = this.repo
             .createQueryBuilder('base')
             .andWhere('base.isDeleted = FALSE');
@@ -74,19 +73,50 @@ class BaseService {
                     }
                     else if (typeof filter[key] !== 'object') {
                         let checkFilter = key.split('.');
-                        if (checkFilter.length > 1) {
-                            if (filter[key] === 'NULL') {
-                                qb = qb.andWhere(`${(key)} IS NULL`);
+                        const listKey = filter[key].split('/');
+                        const columnName = checkFilter.length > 1 ? key : `base.${key}`;
+                        const condition = listKey.length > 1 ? `BETWEEN :start AND :end` : `= :${key}`;
+                        if (filter[key] === '') {
+                            qb = qb.andWhere(`${columnName} IS NOT NULL`);
+                        }
+                        else if (filter[key] !== '') {
+                            console.log(key);
+                            console.log(listKey[0] > listKey[1] && listKey[0] !== "" && listKey[1] !== "");
+                            console.log(listKey[0] === "");
+                            console.log(listKey[1] === "");
+                            console.log(listKey);
+                            if (listKey[0] > listKey[1] && listKey[0] !== "" && listKey[1] !== "") {
+                                console.log("vao day1");
+                                qb = qb.andWhere(`${columnName} ${condition}`, {
+                                    start: listKey[1],
+                                    end: listKey[0]
+                                });
                             }
-                            else if (filter[key] !== "") {
-                                qb = qb.andWhere(`${(key)}=:${key}`, { [key]: filter[key] });
+                            else if (listKey[0] === "") {
+                                console.log("de la voa day2");
+                                qb = qb.andWhere(`${columnName} ${condition}`, {
+                                    [key]: filter[key],
+                                    start: 0,
+                                    end: listKey[1]
+                                });
+                            }
+                            else if (listKey[1] === "") {
+                                console.log("vao day3");
+                                qb = qb.andWhere(`${columnName} ${condition}`, {
+                                    [key]: filter[key],
+                                    start: 0,
+                                    end: listKey[0]
+                                });
                             }
                             else {
-                                qb = qb.andWhere(`${(key)} IS NOT NULL`);
+                                console.log("vao day4");
+                                console.log(`${columnName} ${condition}`);
+                                qb = qb.andWhere(`${columnName} ${condition}`, {
+                                    [key]: filter[key],
+                                    start: listKey[0],
+                                    end: listKey[1]
+                                });
                             }
-                        }
-                        else {
-                            qb = qb.andWhere(`base.${(0, StringUtils_1.snakeCase)(key)}=:${key}`, { [key]: filter[key] });
                         }
                     }
                 });
@@ -113,6 +143,7 @@ class BaseService {
                 }
             }));
         }
+        console.log(request.getQuery());
         if (fullTextSearch && this.listQuery.length) {
             request.andWhere(new typeorm_1.Brackets((qb) => {
                 this.listQuery.forEach((key) => {
@@ -135,7 +166,12 @@ class BaseService {
         if (sorts && Object.keys(sorts).length) {
             Object.keys(sorts).forEach((key) => {
                 const checkKey = key.split('.');
-                request.orderBy(`${checkKey.length === 1 ? 'base.' + checkKey[0] : key}`, sorts[key]);
+                if (checkKey.length > 1) {
+                    request.orderBy(`${checkKey.length > 1 ? checkKey[0] + '.' + checkKey[1] : key}`, sorts[key]);
+                }
+                else {
+                    request.orderBy(`${checkKey.length === 1 ? 'base.' + checkKey[0] : key}`, sorts[key]);
+                }
             });
         }
         request.take(perPage || 10).skip((page !== undefined ? page - 1 : 0) * (perPage || 10));

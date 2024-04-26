@@ -65,3 +65,11 @@ export function getImages<T>(
 
   return [listFilesActive, listFilesRemove];
 }
+export function getTheDate(value: number) {
+  const dayjs = require('dayjs');
+  const currentDate = dayjs();
+  const threeDaysAgo = currentDate.subtract(value, 'day');
+  const formattedDate = threeDaysAgo.format('YYYY-MM-DD');
+  const formattedCurrentDate = currentDate.format('YYYY-MM-DD');
+  return `${formattedDate}/${formattedCurrentDate}`;
+}

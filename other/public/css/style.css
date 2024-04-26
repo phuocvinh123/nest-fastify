@@ -1857,3 +1857,7 @@ video {
     left: 16rem;
   }
 }
+
+input[type='radio'].bg-red-600:checked {
+  background-color: #e53e3e !important;
+}

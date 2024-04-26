@@ -7,7 +7,7 @@ export declare class CreatePostTypeRequestDto extends CreatePostTypeRequestDto_b
 declare const UpdatePostTypeRequestDto_base: import("@nestjs/common").Type<Pick<PostType, "name" | "code">>;
 export declare class UpdatePostTypeRequestDto extends UpdatePostTypeRequestDto_base {
 }
-declare const PostTypeDto_base: import("@nestjs/common").Type<Partial<Omit<PostType, "isDeleted" | "createdAt" | "updatedAt" | "items">>>;
+declare const PostTypeDto_base: import("@nestjs/common").Type<Partial<Omit<PostType, "items" | "isDeleted" | "createdAt" | "updatedAt">>>;
 export declare class PostTypeDto extends PostTypeDto_base {
 }
 declare const PostTypeResponseDto_base: import("@nestjs/common").Type<Partial<DefaultResponsesDto>>;
