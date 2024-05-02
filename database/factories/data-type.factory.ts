@@ -9,4 +9,3 @@ export default setSeederFactory(DataType, (faker) => {
 
   return data;
 });
- 

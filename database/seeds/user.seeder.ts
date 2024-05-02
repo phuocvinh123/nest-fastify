@@ -51,23 +51,6 @@ import {
   P_ADDRESS_UPDATE,
   // P_ADDRESS_DETAIL,
   P_ADDRESS_DELETE,
-  PRODUCT_CREATE,
-  PRODUCT_LIST,
-  PRODUCT_DETAIL,
-  PRODUCT_UPDATE,
-  PRODUCT_DELETE,
-  CATEGORY_CREATE,
-  CATEGORY_UPDATE,
-  CATEGORY_DETAIL,
-  CATEGORY_LIST,
-  CATEGORY_DELETE,
-  STORE_LISTED,
-  STORE_DETAIL,
-  STORE_CREATE,
-  STORE_UPDATE,
-  STORE_DELETE,
-  P_ORDER_LISTED,
-  P_ORDER_CREATE,
 } from '@service';
 
 export class UserSeeder implements Seeder {
@@ -132,27 +115,6 @@ export class UserSeeder implements Seeder {
         P_ADDRESS_CREATE,
         P_ADDRESS_UPDATE,
         P_ADDRESS_DELETE,
-
-        PRODUCT_CREATE,
-        PRODUCT_LIST,
-        PRODUCT_DETAIL,
-        PRODUCT_UPDATE,
-        PRODUCT_DELETE,
-
-        CATEGORY_CREATE,
-        CATEGORY_UPDATE,
-        CATEGORY_DETAIL,
-        CATEGORY_LIST,
-        CATEGORY_DELETE,
-
-        STORE_LISTED,
-        STORE_DETAIL,
-        STORE_CREATE,
-        STORE_UPDATE,
-        STORE_DELETE,
-
-        P_ORDER_LISTED,
-        P_ORDER_CREATE,
       ],
       isSystemAdmin: false,
     };

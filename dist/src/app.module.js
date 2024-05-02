@@ -26,6 +26,7 @@ exports.AppModule = AppModule = __decorate([
         controllers: [_controller_1.AppController],
         imports: [
             nest_winston_1.WinstonModule.forRoot(_config_1.loggerOptions),
+            _module_1.NotificationModule,
             _module_1.SchedulerModule,
             _module_1.UserModule,
             _module_1.CoreModule,
@@ -48,9 +49,8 @@ exports.AppModule = AppModule = __decorate([
                     username: _config_1.appConfig.DATABASE_USER,
                     password: _config_1.appConfig.DATABASE_PASSWORD,
                     database: _config_1.appConfig.NODE_ENV !== 'test' ? _config_1.appConfig.DATABASE_NAME : 'postgres',
-                    autoLoadEntities: true,
+                    synchronize: false,
                     entities: [__dirname + '/**/*.{entity,model}.{js,ts}'],
-                    synchronize: _config_1.appConfig.NODE_ENV !== 'prod',
                     logging: ['error'],
                     logger: _config_1.appConfig.NODE_ENV !== 'prod' ? 'advanced-console' : new _config_1.DbCustomLogger(),
                     namingStrategy: new _shared_1.NamingStrategy(),
@@ -68,7 +68,7 @@ exports.AppModule = AppModule = __decorate([
                 }),
                 isGlobal: true,
             }),
-            _module_1.ProductModule,
+            _module_1.BuildingModule,
         ],
     })
 ], AppModule);

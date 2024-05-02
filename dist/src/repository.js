@@ -29,10 +29,6 @@ __exportStar(require("./module/user/repository/address-province.repository"), ex
 __exportStar(require("./module/user/repository/address-ward.repository"), exports);
 __exportStar(require("./module/user/repository/user.repository"), exports);
 __exportStar(require("./module/user/repository/user-role.repository"), exports);
-__exportStar(require("./module/product/repository/product-category.repository"), exports);
-__exportStar(require("./module/product/repository/product.repository"), exports);
-__exportStar(require("./module/product/repository/product-store.repository"), exports);
-__exportStar(require("./module/product/repository/order.repository"), exports);
-__exportStar(require("./module/product/repository/order-address.repository"), exports);
-__exportStar(require("./module/product/repository/order-product.repository"), exports);
+__exportStar(require("./module/building/repository/building.repository"), exports);
+__exportStar(require("./module/building/repository/room.repository"), exports);
 //# sourceMappingURL=repository.js.map

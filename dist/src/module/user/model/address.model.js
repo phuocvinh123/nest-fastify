@@ -74,11 +74,6 @@ __decorate([
     (0, class_transformer_1.Type)(() => _model_1.User),
     __metadata("design:type", _model_1.User)
 ], Address.prototype, "user", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => _model_1.OrderAddress, (od) => od.codeWard, { eager: false }),
-    (0, class_transformer_1.Expose)({ groups: [_shared_1.MaxGroup] }),
-    __metadata("design:type", Array)
-], Address.prototype, "orderAddress", void 0);
 exports.Address = Address = __decorate([
     (0, typeorm_1.Entity)({ schema: 'user' })
 ], Address);

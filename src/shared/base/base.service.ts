@@ -6,6 +6,8 @@ import { snakeCase } from 'typeorm/util/StringUtils';
 
 import { PaginationQueryDto, BaseRepository } from '@shared';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
+import { query } from 'winston';
+import { isNull } from 'util';
 
 export abstract class BaseService<T extends ObjectLiteral> {
   public listQuery: string[] = [];
@@ -16,7 +18,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
   public listInnerJoin: { key: string; condition: string }[] = [];
   protected constructor(
     public repo: BaseRepository<T>, // public repoHistory?: Repository<T>,
-  ) {}
+  ) { }
 
   /**
    * Decorator that marks a class as a [provider](https://docs.nestjs.com/providers).
@@ -41,18 +43,21 @@ export abstract class BaseService<T extends ObjectLiteral> {
 
     const filter =
       typeof paginationQuery.filter === 'string' ? JSON.parse(paginationQuery.filter) : paginationQuery.filter;
+
     const skip = typeof paginationQuery.skip === 'string' ? JSON.parse(paginationQuery.skip) : paginationQuery.skip;
     const extend =
       typeof paginationQuery.extend === 'string' ? JSON.parse(paginationQuery.extend) : paginationQuery.extend;
 
     const request = this.repo
       .createQueryBuilder('base')
-      .orderBy('base.createdAt', 'DESC')
-      .withDeleted()
-      .andWhere('base.isDeleted Is Null');
+      // .orderBy('base.createdAt', 'DESC')
+      // .withDeleted()
+      // .andWhere('base.isDeleted Is Null');
+      .andWhere('base.isDeleted = FALSE');
+
     if (this.listInnerJoin.length) {
       this.listInnerJoin.forEach((innerJoin) => {
-        request.innerJoin(`base.${innerJoin.key}`, innerJoin.key, `${innerJoin.key}.${innerJoin.condition}`);
+        request.innerJoinAndSelect(`base.${innerJoin.key}`, innerJoin.key, `${innerJoin.key}.${innerJoin.condition}`);
       });
     }
     if (this.listJoin.length) {
@@ -102,8 +107,53 @@ export abstract class BaseService<T extends ObjectLiteral> {
               }
             } else if (typeof filter[key] !== 'object') {
               // /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(filter[key])
-              if (filter[key] === 'NULL') qb = qb.andWhere(`base.${key} IS NULL`);
-              else qb = qb.andWhere(`base.${snakeCase(key)}=:${key}`, { [key]: filter[key] });
+              let checkFilter = key.split('.');
+              const listKey = filter[key].split('/');
+              const columnName = checkFilter.length > 1 ? key : `base.${key}`;
+              const condition = listKey.length > 1 ? `BETWEEN :start AND :end` : `= :${key}`;
+              if (filter[key] === '') {
+                qb = qb.andWhere(`${columnName} IS NOT NULL`);
+              }
+              else if (filter[key] !== '') {
+                console.log(key);
+                console.log(listKey[0] > listKey[1] && listKey[0] !== "" && listKey[1] !== "")
+                console.log(listKey[0] === "")
+                console.log(listKey[1] === "")
+                console.log(listKey)
+
+                if (listKey[0] > listKey[1] && listKey[0] !== "" && listKey[1] !== "") {
+                  console.log("vao day1");
+                  qb = qb.andWhere(`${columnName} ${condition}`, {
+                    start: listKey[1],
+                    end: listKey[0]
+                  });
+                } else if (listKey[0] === "") {
+                  console.log("de la voa day2");
+
+                  qb = qb.andWhere(`${columnName} ${condition}`, {
+                    [key]: filter[key],
+                    start: 0,
+                    end: listKey[1]
+                  });
+                } else if (listKey[1] === "") {
+                  console.log("vao day3");
+
+                  qb = qb.andWhere(`${columnName} ${condition}`, {
+                    [key]: filter[key],
+                    start: 0,
+                    end: listKey[0]
+                  });
+                } else {
+                  console.log("vao day4");
+                  console.log(`${columnName} ${condition}`);
+
+                  qb = qb.andWhere(`${columnName} ${condition}`, {
+                    [key]: filter[key],
+                    start: listKey[0],
+                    end: listKey[1]
+                  });
+                }
+              }
             }
           });
 
@@ -133,13 +183,16 @@ export abstract class BaseService<T extends ObjectLiteral> {
         }),
       );
     }
+
+    console.log(request.getQuery());
+
     if (fullTextSearch && this.listQuery.length) {
       request.andWhere(
         new Brackets((qb) => {
           this.listQuery.forEach((key) => {
             if (!filter || !filter[key]) {
-              qb = qb.orWhere(`base.${snakeCase(key)} like :${key}`, {
-                [key]: `%${fullTextSearch}%`,
+              qb = qb.orWhere(`LOWER(base.${snakeCase(key)}) LIKE LOWER(:${key})`, {
+                [key]: `%${fullTextSearch.toLowerCase()}%`,
               });
             }
           });
@@ -154,13 +207,23 @@ export abstract class BaseService<T extends ObjectLiteral> {
     }
 
     let { sorts } = paginationQuery;
+
     if (typeof sorts === 'string') sorts = JSON.parse(sorts);
+    // console.log(sorts);
+
     if (sorts && Object.keys(sorts).length) {
       Object.keys(sorts).forEach((key) => {
         const checkKey = key.split('.');
-        request.orderBy(`${checkKey.length === 1 ? 'base.' + checkKey[0] : key}`, sorts![key]);
+        if (checkKey.length > 1) {
+          request.orderBy(`${checkKey.length > 1 ? checkKey[0] + '.' + checkKey[1] : key}`, sorts![key]);
+          // }
+        } else {
+          request.orderBy(`${checkKey.length === 1 ? 'base.' + checkKey[0] : key}`, sorts![key]);
+        }
       });
     }
+    // console.log(request.getSql());
+
     request.take(perPage || 10).skip((page !== undefined ? page - 1 : 0) * (perPage || 10));
 
     const res: [T[], number] = await request.getManyAndCount();
@@ -205,6 +268,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
     const i18n = I18nContext.current()!;
     if (!id) throw new BadRequestException(i18n.t('common.Data id not found', { args: { id } }));
     const request = this.repo.createQueryBuilder('base');
+
     if (this.listJoin.length) {
       this.listJoin.forEach((key) => {
         const checkKey = key.split('.');
@@ -212,6 +276,12 @@ export abstract class BaseService<T extends ObjectLiteral> {
           `${checkKey.length === 1 ? 'base.' + checkKey[0] : key}`,
           checkKey[checkKey.length - 1],
         );
+      });
+    }
+
+    if (this.listInnerJoin.length) {
+      this.listInnerJoin.forEach((innerJoin) => {
+        request.innerJoinAndSelect(`base.${innerJoin.key}`, innerJoin.key, `${innerJoin.key}.${innerJoin.condition}`);
       });
     }
     if (listJoin.length) {

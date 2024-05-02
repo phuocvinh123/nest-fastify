@@ -11,7 +11,6 @@ class MainSeeder {
         await (0, typeorm_extension_1.runSeeder)(dataSource, seeds_1.PostTypeSeeder);
         await (0, typeorm_extension_1.runSeeder)(dataSource, seeds_1.UserSeeder);
         await (0, typeorm_extension_1.runSeeder)(dataSource, seeds_1.AddressProvinceSeeder);
-        await (0, typeorm_extension_1.runSeeder)(dataSource, seeds_1.ProductSeeder);
     }
 }
 exports.MainSeeder = MainSeeder;

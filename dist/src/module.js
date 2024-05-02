@@ -18,5 +18,5 @@ __exportStar(require("./notification/notification.module"), exports);
 __exportStar(require("./scheduler/scheduler.module"), exports);
 __exportStar(require("./module/core/core.module"), exports);
 __exportStar(require("./module/user/user.module"), exports);
-__exportStar(require("./module/product/product.module"), exports);
+__exportStar(require("./module/building/building.module"), exports);
 //# sourceMappingURL=module.js.map

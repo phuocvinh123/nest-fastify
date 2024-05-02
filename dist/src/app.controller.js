@@ -16,179 +16,287 @@ exports.AppController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const _service_1 = require("./service");
-const nestjs_i18n_1 = require("nestjs-i18n");
 const _shared_1 = require("./shared");
 let AppController = class AppController {
-    constructor(categoryService, productService) {
-        this.categoryService = categoryService;
-        this.productService = productService;
+    constructor(buildingService) {
+        this.buildingService = buildingService;
     }
-    async root(language = 'en', urlLang = '/vn', paginationQuery) {
-        const { data } = await this.common(language);
-        let [categories] = await this.categoryService.findAll(paginationQuery);
-        const [products] = await this.productService.findAll(paginationQuery);
-        const featureCate = categories.slice(0, 3);
-        categories = categories.map((item) => Object.assign(item, { countProds: item.products?.length }));
-        return {
-            urlLang,
-            ...data,
-            language: {
-                ...data.language,
-            },
-            categoriFilter: featureCate,
-            categories: categories,
-            products: products,
-        };
-    }
-    async findOneBySlug(language = 'en', urlLang = '/vn', slugCategory, paginationQuery) {
-        const { data } = await this.common(language);
-        const products = await this.categoryService.findSlug(slugCategory);
-        const [categories] = await this.categoryService.findAll(paginationQuery);
-        return { urlLang, ...data, products, categories };
-    }
-    async rootEn(language = 'vn', urlLang = '/en', paginationQuery) {
-        return await this.root(language, urlLang, paginationQuery);
-    }
-    async common(language) {
-        const i18n = nestjs_i18n_1.I18nContext.current();
-        return {
-            data: {
-                title: 'Web Store',
-                content: 'Web Store',
-                lang: language,
-                isEnglish: language == 'en',
-                language: {
-                    layout: {
-                        header: {
-                            AboutUs: i18n.t('main.layout.header.About', { lang: language }),
-                            Me: i18n.t('main.layout.header.Me', { lang: language }),
-                            Whistlist: i18n.t('main.layout.header.Whistlist', { lang: language }),
-                            OrderTracking: i18n.t('main.layout.header.OrderTracking', { lang: language }),
-                            NeedHelp: i18n.t('main.layout.header.NeedHelp', { lang: language }),
-                            CallUs: i18n.t('main.layout.header.CallUs', { lang: language }),
-                            Compare: i18n.t('main.layout.header.Compare', { lang: language }),
-                            Cart: i18n.t('main.layout.header.Cart', { lang: language }),
-                            Account: i18n.t('main.layout.header.Account', { lang: language }),
-                            Deals: i18n.t('main.layout.header.Deals', { lang: language }),
-                            Home: i18n.t('main.layout.header.Home', { lang: language }),
-                            About: i18n.t('main.layout.header.About', { lang: language }),
-                            Shop: i18n.t('main.layout.header.Shop', { lang: language }),
-                            Vendor: i18n.t('main.layout.header.Vendor', { lang: language }),
-                            MegaMenu: i18n.t('main.layout.header.MegaMenu', { lang: language }),
-                            Blog: i18n.t('main.layout.header.Blog', { lang: language }),
-                            Pages: i18n.t('main.layout.header.Pages', { lang: language }),
-                            Contact: i18n.t('main.layout.header.Contact', { lang: language }),
-                            Support: i18n.t('main.layout.header.Support', { lang: language }),
-                            MyVoucher: i18n.t('main.layout.header.MyVoucher', { lang: language }),
-                            MyWishlist: i18n.t('main.layout.header.MyWishlist', { lang: language }),
-                            Settings: i18n.t('main.layout.header.Settings', { lang: language }),
-                            SignOut: i18n.t('main.layout.header.SignOut', { lang: language }),
-                            AllCategory: i18n.t('main.layout.header.AllCategory', { lang: language }),
-                        },
-                        footer: {
-                            WedStore: i18n.t('main.layout.footer.WedStore', { lang: language }),
-                            Address: i18n.t('main.layout.footer.Address', { lang: language }),
-                            CallUs: i18n.t('main.layout.footer.CallUs', { lang: language }),
-                            Email: i18n.t('main.layout.footer.Email', { lang: language }),
-                            Hour: i18n.t('main.layout.footer.Hour', { lang: language }),
-                            orther: {
-                                Company: {
-                                    Company: i18n.t('main.layout.footer.orther.Company.Company', { lang: language }),
-                                    Careers: i18n.t('main.layout.footer.orther.Company.Careers', { lang: language }),
-                                    TermsConditions: i18n.t('main.layout.footer.orther.Company.TermsConditions', { lang: language }),
-                                    PrivacyPolicy: i18n.t('main.layout.footer.orther.Company.PrivacyPolicy', { lang: language }),
-                                    DeliveryInformation: i18n.t('main.layout.footer.orther.Company.DeliveryInformation', {
-                                        lang: language,
-                                    }),
-                                    About: i18n.t('main.layout.footer.orther.Company.About', { lang: language }),
-                                    Contact: i18n.t('main.layout.footer.orther.Company.Contact', { lang: language }),
-                                },
-                                Account: {
-                                    SignIn: i18n.t('main.layout.footer.orther.Account.SignIn', { lang: language }),
-                                    ViewCart: i18n.t('main.layout.footer.orther.Account.ViewCart', { lang: language }),
-                                    MyWishlist: i18n.t('main.layout.footer.orther.Account.MyWishlist', { lang: language }),
-                                    TrackMyOrder: i18n.t('main.layout.footer.orther.Account.TrackMyOrder', { lang: language }),
-                                    HelpTicket: i18n.t('main.layout.footer.orther.Account.HelpTicket', { lang: language }),
-                                    ShippingDetails: i18n.t('main.layout.footer.orther.Account.ShippingDetails', { lang: language }),
-                                    CompareProducts: i18n.t('main.layout.footer.orther.Account.CompareProducts', { lang: language }),
-                                },
-                                Corporate: {
-                                    BecomeVendor: i18n.t('main.layout.footer.orther.Corporate.BecomeVendor', { lang: language }),
-                                    AffiliateProgram: i18n.t('main.layout.footer.orther.Corporate.AffiliateProgram', { lang: language }),
-                                    FarmBusiness: i18n.t('main.layout.footer.orther.Corporate.FarmBusiness', { lang: language }),
-                                    FarmCareers: i18n.t('main.layout.footer.orther.Corporate.FarmCareers', { lang: language }),
-                                    OurSuppliers: i18n.t('main.layout.footer.orther.Corporate.OurSuppliers', { lang: language }),
-                                    Accessibility: i18n.t('main.layout.footer.orther.Corporate.Accessibility', { lang: language }),
-                                    Promotions: i18n.t('main.layout.footer.orther.Corporate.Promotions', { lang: language }),
-                                },
-                                Popular: {
-                                    MilkAndFlavouredMilk: i18n.t('main.layout.footer.orther.Popular.MilkAndFlavouredMilk', {
-                                        lang: language,
-                                    }),
-                                    ButterAndMargarine: i18n.t('main.layout.footer.orther.Popular.ButterAndMargarine', {
-                                        lang: language,
-                                    }),
-                                    EggsSubstitutes: i18n.t('main.layout.footer.orther.Popular.EggsSubstitutes', { lang: language }),
-                                    Marmalades: i18n.t('main.layout.footer.orther.Popular.Marmalades', { lang: language }),
-                                    SourCreamandDips: i18n.t('main.layout.footer.orther.Popular.SourCreamandDips', { lang: language }),
-                                    TeaAndKombucha: i18n.t('main.layout.footer.orther.Popular.TeaAndKombucha', { lang: language }),
-                                    Cheese: i18n.t('main.layout.footer.orther.Popular.Cheese', { lang: language }),
-                                },
-                            },
-                            install: {
-                                Install: i18n.t('main.layout.footer.install.Install', { lang: language }),
-                                LinkInstall: i18n.t('main.layout.footer.install.LinkInstall', { lang: language }),
-                                Payment: i18n.t('main.layout.footer.install.Payment', { lang: language }),
-                            },
-                        },
-                        validation: {},
-                    },
+    async root(address) {
+        const [bu] = await this.buildingService.findAll({
+            page: 1,
+            perPage: 10,
+            filter: `{"buildingAddress.province":"${address ? address : ""}"}`
+        });
+        console.log(bu);
+        const [ex] = await this.buildingService.findAll({ perPage: 100 });
+        const uniqueProvinces = [...new Set(ex.map(i => i.buildingAddress.province))];
+        const data = {
+            items: [
+                {
+                    title: "Uhouse",
+                    Content: "Mang lại nhiều tiện ích cho khách thuê",
+                    imageSrc: "/images/property-1.png"
                 },
-            },
+                {
+                    title: "Uhouse",
+                    Content: " Nền tảng quản lý vận hành tòa nhà tiên tiến",
+                    imageSrc: "/images/property-1.png"
+                },
+                {
+                    title: "Uhouse",
+                    Content: "Tiết kiệm chi phí hiệu quả",
+                    imageSrc: "/images/property-1.png"
+                }
+            ],
+            swiper: [
+                {
+                    imageSrc: "/images/swiper1.png",
+                    title: "Các xu hướng lựa chọn thiết kế căn hộ lý tưởng năm 2022"
+                },
+                {
+                    imageSrc: "/images/swiper2.png",
+                    title: "Những căn hộ đơn giản hiện đại có phải là xu hướng mới?"
+                },
+                {
+                    imageSrc: "/images/swiper3.png",
+                    title: "Phong cách thiết kế căn hộ nào sẽ là xu hướng năm 2023?"
+                },
+                {
+                    imageSrc: "/images/swiper1.png",
+                    title: "Các xu hướng lựa chọn thiết kế căn hộ lý tưởng năm 2022"
+                },
+                {
+                    imageSrc: "/images/swiper2.png",
+                    title: "Những căn hộ đơn giản hiện đại có phải là xu hướng mới?"
+                },
+                {
+                    imageSrc: "/images/swiper3.png",
+                    title: "Phong cách thiết kế căn hộ nào sẽ là xu hướng năm 2023?"
+                }
+            ]
+        };
+        return {
+            bu, data, uniqueProvinces
         };
     }
-    administrator() { }
+    async detail1(id) {
+        const bu = await this.buildingService.findOne(id, []);
+        console.log(bu);
+        return {
+            bu
+        };
+    }
+    async detail2(id) {
+        const room = await this.buildingService.findByRoomId(id);
+        let bu;
+        if (room) {
+            bu = await this.buildingService.findOne(room.buildingId.toString(), []);
+        }
+        console.log(room);
+        return {
+            room,
+            bu
+        };
+    }
+    async detail3(paginableParams) {
+        let filterObject = {};
+        const filterParam = paginableParams.filter;
+        if (filterParam) {
+            filterObject = JSON.parse(filterParam);
+        }
+        const { province, type, year, acreage, bedroomTotal, price } = filterObject;
+        const [bu] = await this.buildingService.findAll({
+            ...paginableParams,
+            filter: `{"buildingAddress.province":"${province ? province : ""}",
+    "type":"${type ? type : ""}",
+    "updated_at":"${year ? year : ""}",
+    "rooms.acreage":"${acreage ? acreage : ""}",
+    "rooms.bedroomTotal":"${bedroomTotal ? bedroomTotal : ""}",
+    "rooms.price":"${price !== "/" && price ? price : ""}"}
+    `,
+        });
+        const uniqueProvinces = [...new Set(bu.map(building => building.buildingAddress.province))];
+        const data = {
+            items: [{
+                    name: "An Khánh",
+                    size: 27,
+                    address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+                    price: 3.5
+                }, {
+                    name: "An Khánh",
+                    size: 27,
+                    address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+                    price: 3.5
+                }, {
+                    name: "An Khánh",
+                    size: 27,
+                    address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+                    price: 3.5
+                },
+                {
+                    name: "An Khánh",
+                    size: 27,
+                    address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+                    price: 3.5
+                }],
+            hirePrice: [
+                {
+                    content: "Tăng dần",
+                    value: "ASC"
+                },
+                {
+                    content: "Giảm dần",
+                    value: "DESC"
+                },
+            ],
+            roomAcreageArray: [
+                {
+                    content: "<30m2", value: "0/30"
+                },
+                {
+                    content: "30m2-50m2", value: "30/50"
+                },
+                {
+                    content: "50m2-60m2", value: "50/60"
+                },
+                {
+                    content: "60m2-70m2", value: "60/70"
+                },
+                {
+                    content: "70m2-80m2", value: "70/80"
+                },
+                {
+                    content: "80m2-90m2", value: "80/90"
+                },
+                {
+                    content: "100m2-1000m2", value: "100/1000"
+                },
+            ],
+            roomArrayYear: [
+                {
+                    content: "Cách đây 1 ngày", value: `${(0, _shared_1.getTheDate)(1)}`
+                },
+                {
+                    content: "Cách đây 3 ngày", value: `${(0, _shared_1.getTheDate)(3)}`
+                },
+                {
+                    content: "Cách đây 7 ngày", value: `${(0, _shared_1.getTheDate)(7)}`
+                },
+                {
+                    content: "Cách đây 15 ngày", value: `${(0, _shared_1.getTheDate)(15)}`
+                },
+                {
+                    content: "Cách đây 30 ngày", value: `${(0, _shared_1.getTheDate)(30)}`
+                },
+                {
+                    content: "Cách đây 60 ngày", value: `${(0, _shared_1.getTheDate)(60)}`
+                },
+            ],
+            roomBedroomTotal: [
+                {
+                    content: 0, value: 0
+                },
+                {
+                    content: 1, value: 1
+                },
+                {
+                    content: 2, value: 2
+                },
+                {
+                    content: 3, value: 3
+                },
+                {
+                    content: 4, value: 4
+                },
+                {
+                    content: 5, value: 5
+                },
+                {
+                    content: 6, value: 6
+                },
+            ],
+            roomTypeArray: [
+                {
+                    content: "Căn hộ dịch vụ", value: "CHDV"
+                },
+                {
+                    content: "Motel", value: "MOTEL"
+                },
+                {
+                    content: "Hotel", value: "HOTEL"
+                },
+                {
+                    content: "Phòng trọ", value: "MEZZANINE_ROOM"
+                },
+                {
+                    content: "Chung cư Mini", value: "STUDIO_ROOM"
+                },
+            ],
+            radioPrice: [
+                {
+                    content: "Tất cả", value: ""
+                },
+                {
+                    content: "1", value: 1000000
+                },
+                {
+                    content: "5", value: 5000000
+                },
+                {
+                    content: "7", value: 7000000
+                },
+                {
+                    content: "10", value: 10000000
+                },
+                {
+                    content: "30", value: 30000000
+                }
+            ]
+        };
+        return {
+            bu, data, uniqueProvinces,
+        };
+    }
 };
 exports.AppController = AppController;
 __decorate([
     (0, common_1.Get)(''),
-    (0, common_1.Render)('pages/home/index'),
+    (0, common_1.Render)('index'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(2, (0, common_1.Query)(new common_1.ValidationPipe({ transform: true }))),
+    __param(0, (0, common_1.Query)('address')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object, _shared_1.PaginationQueryDto]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "root", null);
 __decorate([
-    (0, common_1.Get)('/:slugCategory'),
-    (0, common_1.Render)('pages/categoryDetail/index'),
-    openapi.ApiResponse({ status: 200, type: require("./module/product/dto/product-category.dto").ProductCategoryResponseDto }),
-    __param(2, (0, common_1.Param)('slugCategory')),
-    __param(3, (0, common_1.Query)(new common_1.ValidationPipe({ transform: true }))),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object, String, _shared_1.PaginationQueryDto]),
-    __metadata("design:returntype", Promise)
-], AppController.prototype, "findOneBySlug", null);
-__decorate([
-    (0, common_1.Get)('/vn'),
-    (0, common_1.Render)('pages/home/index'),
+    (0, common_1.Get)('/detail1/:id'),
+    (0, common_1.Render)('detail1'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(2, (0, common_1.Query)(new common_1.ValidationPipe({ transform: true }))),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object, _shared_1.PaginationQueryDto]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], AppController.prototype, "rootEn", null);
+], AppController.prototype, "detail1", null);
 __decorate([
-    (0, common_1.Get)('/administrator'),
-    (0, common_1.Render)('administrator'),
-    openapi.ApiResponse({ status: 200 }),
+    (0, common_1.Get)('/detail2/:id'),
+    (0, common_1.Render)('detail2'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], AppController.prototype, "administrator", null);
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "detail2", null);
+__decorate([
+    (0, common_1.Get)('/detail3'),
+    (0, common_1.Render)('detail3'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [_shared_1.PaginationQueryDto]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "detail3", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [_service_1.ProductCategoryService,
-        _service_1.ProductService])
+    __metadata("design:paramtypes", [_service_1.BuildingService])
 ], AppController);
 //# sourceMappingURL=app.controller.js.map

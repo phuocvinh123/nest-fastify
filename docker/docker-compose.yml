@@ -1,5 +1,5 @@
 version: '3.9'
-name: api-shop
+name: uhouse
 services:
   database:
     env_file:

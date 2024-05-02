@@ -30,12 +30,4 @@ __exportStar(require("./module/user/controller/address-ward.controller"), export
 __exportStar(require("./module/user/controller/address.controller"), exports);
 __exportStar(require("./module/user/controller/user.controller"), exports);
 __exportStar(require("./module/user/controller/user-role.controller"), exports);
-__exportStar(require("./module/user/controller/address-province.controller"), exports);
-__exportStar(require("./module/user/controller/address-district.controller"), exports);
-__exportStar(require("./module/user/controller/address-ward.controller"), exports);
-__exportStar(require("./module/user/controller/address.controller"), exports);
-__exportStar(require("./module/product/controller/product-category.controller"), exports);
-__exportStar(require("./module/product/controller/product.controller"), exports);
-__exportStar(require("./module/product/controller/product-store.controller"), exports);
-__exportStar(require("./module/product/controller/order.controller"), exports);
 //# sourceMappingURL=controller.js.map

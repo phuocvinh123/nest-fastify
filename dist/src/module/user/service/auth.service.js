@@ -39,16 +39,18 @@ const argon2 = __importStar(require("argon2"));
 const nestjs_i18n_1 = require("nestjs-i18n");
 const non_secure_1 = require("nanoid/non-secure");
 const _shared_1 = require("../../../shared");
+const _service_1 = require("../../../service");
 const _repository_1 = require("../../../repository");
 const _config_1 = require("../../../config");
 const cron_1 = require("cron");
 const schedule_1 = require("@nestjs/schedule");
 exports.P_AUTH_DELETE_IMAGE_TEMP = '11cc566b-b109-49f8-983f-84ff08f9849e';
 let AuthService = class AuthService extends _shared_1.BaseService {
-    constructor(repo, jwtService, schedulerRegistry) {
+    constructor(repo, jwtService, emailService, schedulerRegistry) {
         super(repo);
         this.repo = repo;
         this.jwtService = jwtService;
+        this.emailService = emailService;
         this.schedulerRegistry = schedulerRegistry;
     }
     async updateRefreshToken(userId, refreshToken) {
@@ -94,6 +96,7 @@ let AuthService = class AuthService extends _shared_1.BaseService {
         return user;
     }
     async sendMailContact(body) {
+        await this.emailService.sendUserContact(body);
         return true;
     }
     async resetPassword({ email, otp, ...body }) {
@@ -134,6 +137,7 @@ exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [_repository_1.UserRepository,
         jwt_1.JwtService,
+        _service_1.EmailService,
         schedule_1.SchedulerRegistry])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

@@ -1,166 +1,600 @@
-import { Get, Controller, Render, ValidationPipe, Query, Param } from '@nestjs/common';
-import { ProductCategoryService, ProductService } from '@service';
-import { ProductCategoryResponseDto } from '@dto';
+import { Get, Controller, Render, Res, Param, UseInterceptors, Query, ParseIntPipe } from '@nestjs/common';
 import { I18nContext } from 'nestjs-i18n';
-import { PaginationQueryDto } from '@shared';
+import { FastifyReply } from 'fastify';
+import dayjs from 'dayjs';
+// import { Cache } from 'cache-manager'; CACHE_MANAGER Inject
+import { CacheInterceptor } from '@nestjs/cache-manager';
+
+import { BuildingService, DataService, ParameterService, PostService } from '@service';
+import { DataDto, PostDto } from '@dto';
+import { getTheDate, PaginationQueryDto } from '@shared';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly categoryService: ProductCategoryService,
-    private readonly productService: ProductService,
-  ) {}
+  constructor(private readonly buildingService: BuildingService) {
+    // private readonly dataService: DataService,
+    // private readonly parameterService: ParameterService, // @Inject(CACHE_MANAGER) private managerCache: Cache,
+  }
+
   @Get('')
-  @Render('pages/home/index')
-  async root(
-    language: string = 'en',
-    urlLang = '/vn',
-    @Query(new ValidationPipe({ transform: true })) paginationQuery: PaginationQueryDto,
-  ): Promise<any> {
-    const { data } = await this.common(language);
-
-    let [categories] = await this.categoryService.findAll(paginationQuery);
-    const [products] = await this.productService.findAll(paginationQuery);
-    const featureCate = categories.slice(0, 3);
-    categories = categories.map((item) => Object.assign(item, { countProds: item.products?.length }));
-
-    return {
-      urlLang,
-      ...data,
-      language: {
-        ...data.language,
-      },
-      categoriFilter: featureCate,
-      categories: categories,
-      products: products,
-    };
-  }
-
-  @Get('/:slugCategory')
-  @Render('pages/categoryDetail/index')
-  async findOneBySlug(
-    language: string = 'en',
-    urlLang = '/vn',
-    @Param('slugCategory') slugCategory: string,
-    @Query(new ValidationPipe({ transform: true })) paginationQuery: PaginationQueryDto,
-  ): Promise<ProductCategoryResponseDto> {
-    const { data } = await this.common(language);
-    const products = await this.categoryService.findSlug(slugCategory);
-    const [categories] = await this.categoryService.findAll(paginationQuery);
-
-    return { urlLang, ...data, products, categories };
-  }
-
-  @Get('/vn')
-  @Render('pages/home/index')
-  async rootEn(
-    language: string = 'vn',
-    urlLang = '/en',
-    @Query(new ValidationPipe({ transform: true })) paginationQuery: PaginationQueryDto,
-  ): Promise<any> {
-    return await this.root(language, urlLang, paginationQuery);
-  }
-
-  async common(language: string): Promise<any> {
-    const i18n = I18nContext.current()!;
-
-    return {
-      data: {
-        title: 'Web Store',
-        content: 'Web Store',
-        lang: language,
-        isEnglish: language == 'en',
-        language: {
-          layout: {
-            header: {
-              AboutUs: i18n.t('main.layout.header.About', { lang: language }),
-              Me: i18n.t('main.layout.header.Me', { lang: language }),
-              Whistlist: i18n.t('main.layout.header.Whistlist', { lang: language }),
-              OrderTracking: i18n.t('main.layout.header.OrderTracking', { lang: language }),
-              NeedHelp: i18n.t('main.layout.header.NeedHelp', { lang: language }),
-              CallUs: i18n.t('main.layout.header.CallUs', { lang: language }),
-              Compare: i18n.t('main.layout.header.Compare', { lang: language }),
-              Cart: i18n.t('main.layout.header.Cart', { lang: language }),
-              Account: i18n.t('main.layout.header.Account', { lang: language }),
-              Deals: i18n.t('main.layout.header.Deals', { lang: language }),
-              Home: i18n.t('main.layout.header.Home', { lang: language }),
-              About: i18n.t('main.layout.header.About', { lang: language }),
-              Shop: i18n.t('main.layout.header.Shop', { lang: language }),
-              Vendor: i18n.t('main.layout.header.Vendor', { lang: language }),
-              MegaMenu: i18n.t('main.layout.header.MegaMenu', { lang: language }),
-              Blog: i18n.t('main.layout.header.Blog', { lang: language }),
-              Pages: i18n.t('main.layout.header.Pages', { lang: language }),
-              Contact: i18n.t('main.layout.header.Contact', { lang: language }),
-              Support: i18n.t('main.layout.header.Support', { lang: language }),
-              MyVoucher: i18n.t('main.layout.header.MyVoucher', { lang: language }),
-              MyWishlist: i18n.t('main.layout.header.MyWishlist', { lang: language }),
-              Settings: i18n.t('main.layout.header.Settings', { lang: language }),
-              SignOut: i18n.t('main.layout.header.SignOut', { lang: language }),
-              AllCategory: i18n.t('main.layout.header.AllCategory', { lang: language }),
-            },
-            footer: {
-              WedStore: i18n.t('main.layout.footer.WedStore', { lang: language }),
-              Address: i18n.t('main.layout.footer.Address', { lang: language }),
-              CallUs: i18n.t('main.layout.footer.CallUs', { lang: language }),
-              Email: i18n.t('main.layout.footer.Email', { lang: language }),
-              Hour: i18n.t('main.layout.footer.Hour', { lang: language }),
-              orther: {
-                Company: {
-                  Company: i18n.t('main.layout.footer.orther.Company.Company', { lang: language }),
-                  Careers: i18n.t('main.layout.footer.orther.Company.Careers', { lang: language }),
-                  TermsConditions: i18n.t('main.layout.footer.orther.Company.TermsConditions', { lang: language }),
-                  PrivacyPolicy: i18n.t('main.layout.footer.orther.Company.PrivacyPolicy', { lang: language }),
-                  DeliveryInformation: i18n.t('main.layout.footer.orther.Company.DeliveryInformation', {
-                    lang: language,
-                  }),
-                  About: i18n.t('main.layout.footer.orther.Company.About', { lang: language }),
-                  Contact: i18n.t('main.layout.footer.orther.Company.Contact', { lang: language }),
-                },
-                Account: {
-                  SignIn: i18n.t('main.layout.footer.orther.Account.SignIn', { lang: language }),
-                  ViewCart: i18n.t('main.layout.footer.orther.Account.ViewCart', { lang: language }),
-                  MyWishlist: i18n.t('main.layout.footer.orther.Account.MyWishlist', { lang: language }),
-                  TrackMyOrder: i18n.t('main.layout.footer.orther.Account.TrackMyOrder', { lang: language }),
-                  HelpTicket: i18n.t('main.layout.footer.orther.Account.HelpTicket', { lang: language }),
-                  ShippingDetails: i18n.t('main.layout.footer.orther.Account.ShippingDetails', { lang: language }),
-                  CompareProducts: i18n.t('main.layout.footer.orther.Account.CompareProducts', { lang: language }),
-                },
-                Corporate: {
-                  BecomeVendor: i18n.t('main.layout.footer.orther.Corporate.BecomeVendor', { lang: language }),
-                  AffiliateProgram: i18n.t('main.layout.footer.orther.Corporate.AffiliateProgram', { lang: language }),
-                  FarmBusiness: i18n.t('main.layout.footer.orther.Corporate.FarmBusiness', { lang: language }),
-                  FarmCareers: i18n.t('main.layout.footer.orther.Corporate.FarmCareers', { lang: language }),
-                  OurSuppliers: i18n.t('main.layout.footer.orther.Corporate.OurSuppliers', { lang: language }),
-                  Accessibility: i18n.t('main.layout.footer.orther.Corporate.Accessibility', { lang: language }),
-                  Promotions: i18n.t('main.layout.footer.orther.Corporate.Promotions', { lang: language }),
-                },
-                Popular: {
-                  MilkAndFlavouredMilk: i18n.t('main.layout.footer.orther.Popular.MilkAndFlavouredMilk', {
-                    lang: language,
-                  }),
-                  ButterAndMargarine: i18n.t('main.layout.footer.orther.Popular.ButterAndMargarine', {
-                    lang: language,
-                  }),
-                  EggsSubstitutes: i18n.t('main.layout.footer.orther.Popular.EggsSubstitutes', { lang: language }),
-                  Marmalades: i18n.t('main.layout.footer.orther.Popular.Marmalades', { lang: language }),
-                  SourCreamandDips: i18n.t('main.layout.footer.orther.Popular.SourCreamandDips', { lang: language }),
-                  TeaAndKombucha: i18n.t('main.layout.footer.orther.Popular.TeaAndKombucha', { lang: language }),
-                  Cheese: i18n.t('main.layout.footer.orther.Popular.Cheese', { lang: language }),
-                },
-              },
-              install: {
-                Install: i18n.t('main.layout.footer.install.Install', { lang: language }),
-                LinkInstall: i18n.t('main.layout.footer.install.LinkInstall', { lang: language }),
-                Payment: i18n.t('main.layout.footer.install.Payment', { lang: language }),
-              },
-            },
-            validation: {},
-          },
+  @Render('index')
+  async root(@Query('address') address: string ): Promise<any> {
+    // const {data} = await this.buildingService.findOne();
+    // console.log(data.map(i => i.id));
+    // const filter = address === '' ? undefined : JSON.stringify({ address });
+    const [bu] = await this.buildingService.findAll(
+      {
+        page: 1,
+        perPage: 10,
+        filter: `{"buildingAddress.province":"${address ? address : ""}"}`
+      });
+      console.log(bu)
+    const [ex] = await this.buildingService.findAll({ perPage: 100 });
+    const uniqueProvinces = [...new Set(ex.map(i => i.buildingAddress.province))];
+    const data={
+      items: [
+        {
+          title: "Uhouse",
+          Content: "Mang lại nhiều tiện ích cho khách thuê",
+          imageSrc: "/images/property-1.png"
         },
-      },
+        {
+          title: "Uhouse",
+          Content: " Nền tảng quản lý vận hành tòa nhà tiên tiến",
+          imageSrc: "/images/property-1.png"
+        },
+        {
+          title: "Uhouse",
+          Content: "Tiết kiệm chi phí hiệu quả",
+          imageSrc: "/images/property-1.png"
+        }
+      ],
+      swiper: [
+        {
+          imageSrc: "/images/swiper1.png",
+          title: "Các xu hướng lựa chọn thiết kế căn hộ lý tưởng năm 2022"
+        },
+        {
+          imageSrc: "/images/swiper2.png",
+          title: "Những căn hộ đơn giản hiện đại có phải là xu hướng mới?"
+        },
+        {
+          imageSrc: "/images/swiper3.png",
+          title: "Phong cách thiết kế căn hộ nào sẽ là xu hướng năm 2023?"
+        },
+        {
+          imageSrc: "/images/swiper1.png",
+          title: "Các xu hướng lựa chọn thiết kế căn hộ lý tưởng năm 2022"
+        },
+        {
+          imageSrc: "/images/swiper2.png",
+          title: "Những căn hộ đơn giản hiện đại có phải là xu hướng mới?"
+        },
+        {
+          imageSrc: "/images/swiper3.png",
+          title: "Phong cách thiết kế căn hộ nào sẽ là xu hướng năm 2023?"
+        }
+      ]
+    };
+    return {
+      bu,data,uniqueProvinces
     };
   }
-  @Get('/administrator')
-  @Render('administrator')
-  administrator(): void {}
+
+    @Get('/detail1/:id')
+    @Render('detail1')
+    async detail1(@Param('id') id: string): Promise<any>{
+      const bu = await this.buildingService.findOne(id,[])
+    console.log(bu);
+    return {
+      bu
+    }
+  }
+
+
+  @Get('/detail2/:id')
+  @Render('detail2')
+  async detail2(@Param('id', ParseIntPipe) id: number): Promise<any> {
+    const room = await this.buildingService.findByRoomId(id);
+    let bu;
+    if (room) {
+      bu = await this.buildingService.findOne(room.buildingId.toString(), []);
+    }
+    console.log(room);
+    return {
+      room,
+      bu
+    };
+  }
+
+  @Get('/detail3')
+  @Render('detail3')
+  async detail3(
+    @Query() paginableParams: PaginationQueryDto
+  ): Promise<any> {
+    let filterObject: any = {};
+    const filterParam = paginableParams.filter;
+    if (filterParam) {
+      filterObject = JSON.parse(filterParam);
+    }
+    const { province, type, year, acreage, bedroomTotal, price } = filterObject;
+
+    const [bu] = await this.buildingService.findAll({
+      ...paginableParams,
+      filter: `{"buildingAddress.province":"${province ? province : ""}",
+    "type":"${type ? type : ""}",
+    "updated_at":"${year ? year : ""}",
+    "rooms.acreage":"${acreage ? acreage : ""}",
+    "rooms.bedroomTotal":"${bedroomTotal ? bedroomTotal : ""}",
+    "rooms.price":"${price !== "/" && price ? price : ""}"}
+    `,
+    });
+
+    const uniqueProvinces = [...new Set(bu.map(building => building.buildingAddress.province))];
+
+    const data = {
+      items: [{
+        name: "An Khánh",
+        size: 27,
+        address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+        price: 3.5
+      }, {
+        name: "An Khánh",
+        size: 27,
+        address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+        price: 3.5
+      }, {
+        name: "An Khánh",
+        size: 27,
+        address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+        price: 3.5
+      },
+      {
+        name: "An Khánh",
+        size: 27,
+        address: "261/37/1D Chu Văn An, phường 12, Quận Bình Thạnh, TP.HCM",
+        price: 3.5
+      }],
+      hirePrice: [
+        {
+          content: "Tăng dần",
+          value: "ASC"
+        },
+        {
+          content: "Giảm dần",
+          value: "DESC"
+        },
+      ],
+      roomAcreageArray: [
+        {
+          content: "<30m2", value: "0/30"
+        },
+        {
+          content: "30m2-50m2", value: "30/50"
+        },
+        {
+          content: "50m2-60m2", value: "50/60"
+        },
+        {
+          content: "60m2-70m2", value: "60/70"
+        },
+        {
+          content: "70m2-80m2", value: "70/80"
+        },
+        {
+          content: "80m2-90m2", value: "80/90"
+        },
+        {
+          content: "100m2-1000m2", value: "100/1000"
+        },
+      ],
+      roomArrayYear: [
+        {
+          content: "Cách đây 1 ngày", value: `${getTheDate(1)}`
+        },
+        {
+          content: "Cách đây 3 ngày", value: `${getTheDate(3)}`
+        },
+        {
+          content: "Cách đây 7 ngày", value: `${getTheDate(7)}`
+        },
+        {
+          content: "Cách đây 15 ngày", value: `${getTheDate(15)}`
+        },
+        {
+          content: "Cách đây 30 ngày", value: `${getTheDate(30)}`
+        },
+        {
+          content: "Cách đây 60 ngày", value: `${getTheDate(60)}`
+        },
+      ],
+      roomBedroomTotal: [
+        {
+          content: 0, value: 0
+        },
+        {
+          content: 1, value: 1
+        },
+        {
+          content: 2, value: 2
+        },
+        {
+          content: 3, value: 3
+        },
+        {
+          content: 4, value: 4
+        },
+        {
+          content: 5, value: 5
+        },
+        {
+          content: 6, value: 6
+        },
+      ],
+      roomTypeArray: [
+        {
+          content: "Căn hộ dịch vụ", value: "CHDV"
+        },
+        {
+          content: "Motel", value: "MOTEL"
+        },
+        {
+          content: "Hotel", value: "HOTEL"
+        },
+        {
+          content: "Phòng trọ", value: "MEZZANINE_ROOM"
+        },
+        {
+          content: "Chung cư Mini", value: "STUDIO_ROOM"
+        },
+      ],
+      radioPrice: [
+        {
+          content: "Tất cả", value: ""
+        },
+        {
+          content: "1", value: 1000000
+        },
+        {
+          content: "5", value: 5000000
+        },
+        {
+          content: "7", value: 7000000
+        },
+        {
+          content: "10", value: 10000000
+        },
+        {
+          content: "30", value: 30000000
+        }
+      ]
+    };
+
+    return {
+      bu, data, uniqueProvinces,
+    };
+  }
+
+  // @Get('/en')
+  // @Render('index')
+  // @UseInterceptors(CacheInterceptor)
+  // async rootLang(): Promise<IHome> {
+  //   return await this.root('en', '/');
+  // }
+  //
+  // @Get('/tin-tuc')
+  // @Render('post/list')
+  // async news(
+  //   language: string = 'vn',
+  //   type = 'news',
+  //   url: string = '/tin-tuc/',
+  //   urlLang = '/en/news',
+  // ): Promise<IListPost> {
+  //   const i18n = I18nContext.current()!;
+  //   const { data } = await this.common(language);
+  //   const postArray = await this.postService.findArrayCode([type]);
+  //   return {
+  //     urlLang,
+  //     ...data,
+  //     language: {
+  //       ...data.language,
+  //       page: {
+  //         Title: i18n.t(`client.page.${type}.Title`, { lang: language }),
+  //         Description: i18n.t(`client.page.${type}.Description`, { lang: language }),
+  //       },
+  //     },
+  //     post: postArray[type].map((item) => {
+  //       const translation = item.translations?.filter((subItem) => subItem.language === language)[0];
+  //       return {
+  //         ...item,
+  //         SeeMore: i18n.t('client.page.home.SeeMore', { lang: language }),
+  //         translation: {
+  //           ...translation,
+  //           slug: url + translation!.slug,
+  //         },
+  //       };
+  //     }),
+  //   };
+  // }
+  // @Get('/en/news')
+  // @Render('post/list')
+  // async newsEn(): Promise<IListPost> {
+  //   return await this.news('en', 'news', '/en/news/', '/tin-tuc');
+  // }
+  //
+  // @Get('/du-an')
+  // @Render('post/list')
+  // async projects(): Promise<IListPost> {
+  //   return await this.news('vn', 'projects', '/du-an/', '/en/projects');
+  // }
+  //
+  // @Get('/en/projects')
+  // @Render('post/list')
+  // async projectsEn(): Promise<IListPost> {
+  //   return await this.news('en', 'projects', '/en/projects/', '/du-an');
+  // }
+  //
+  // @Get('/tin-tuc/:slug')
+  // @Render('post/detail')
+  // @UseInterceptors(CacheInterceptor)
+  // async newsDetail(
+  //   @Param('slug') slug: string,
+  //   @Res({ passthrough: true }) res: FastifyReply,
+  //   language: string = 'vn',
+  //   type = 'news',
+  //   url: string = '/tin-tuc/',
+  //   urlLang = '/en/news/',
+  // ): Promise<IPost | void> {
+  //   const i18n = I18nContext.current()!;
+  //   const { data } = await this.common(language);
+  //   const post = await this.postService.findSlug(slug);
+  //   if (!post) res.redirect(404, '/404');
+  //   else {
+  //     const postArray = await this.postService.findArrayCode([type]);
+  //     const translation = post.translations?.filter((subItem) => subItem.language === language)[0];
+  //     return {
+  //       urlLang: urlLang + post.translations?.filter((subItem) => subItem.language !== language)[0].slug,
+  //       ...data,
+  //       language: {
+  //         ...data.language,
+  //         page: {
+  //           Title: i18n.t(`client.page.${type}.Title`, { lang: language }),
+  //           Description: i18n.t(`client.page.${type}.Description`, { lang: language }),
+  //           OtherRelated: i18n.t(`client.page.${type}.OtherRelated`, { lang: language }),
+  //         },
+  //       },
+  //       post: postArray[type].map((item) => {
+  //         const translation = item.translations?.filter((subItem) => subItem.language === language)[0];
+  //         return {
+  //           ...item,
+  //           createdAt: dayjs(item.createdAt).format('DD-MM-YYYY'),
+  //           SeeMore: i18n.t('client.page.home.SeeMore', { lang: language }),
+  //           translation: {
+  //             ...translation,
+  //             slug: url + translation!.slug,
+  //           },
+  //         };
+  //       }),
+  //       detail: {
+  //         ...post,
+  //         translation: {
+  //           ...translation,
+  //           slug: url + translation!.slug,
+  //         },
+  //       },
+  //     };
+  //   }
+  // }
+  // @Get('/en/news/:slug')
+  // @Render('post/detail')
+  // @UseInterceptors(CacheInterceptor)
+  // async newsDetailEn(
+  //   @Param('slug') slug: string,
+  //   @Res({ passthrough: true }) res: FastifyReply,
+  // ): Promise<IPost | void> {
+  //   return await this.newsDetail(slug, res, 'en', 'news', '/en/news/', '/tin-tuc/');
+  // }
+  //
+  // @Get('/du-an/:slug')
+  // @Render('post/detail')
+  // @UseInterceptors(CacheInterceptor)
+  // async projectsDetail(
+  //   @Param('slug') slug: string,
+  //   @Res({ passthrough: true }) res: FastifyReply,
+  // ): Promise<IPost | void> {
+  //   return await this.newsDetail(slug, res, 'vn', 'projects', '/du-an/', '/en/projects/');
+  // }
+  // @Get('/en/projects/:slug')
+  // @Render('post/detail')
+  // @UseInterceptors(CacheInterceptor)
+  // async projectsDetailEn(
+  //   @Param('slug') slug: string,
+  //   @Res({ passthrough: true }) res: FastifyReply,
+  // ): Promise<IPost | void> {
+  //   return await this.newsDetail(slug, res, 'en', 'projects', '/en/projects/', '/du-an/');
+  // }
+  //
+  // @Get('/ve-cong-nghe')
+  // @Render('about/tech')
+  // @UseInterceptors(CacheInterceptor)
+  // async aboutTech(language: string = 'vn', urlLang = '/en/about-tech'): Promise<IAbout> {
+  //   const i18n = I18nContext.current()!;
+  //   const { data, dataArray } = await this.common(language, ['tech']);
+  //   return {
+  //     urlLang,
+  //     ...data,
+  //     language: {
+  //       ...data.language,
+  //       page: {
+  //         Title: i18n.t(`client.page.about.tech.Title`, { lang: language }),
+  //         Description: i18n.t(`client.page.about.tech.Description`, { lang: language }),
+  //       },
+  //     },
+  //     JSON: {
+  //       detail: dataArray['tech'],
+  //     },
+  //   };
+  // }
+  //
+  // @Get('/en/about-tech')
+  // @Render('about/tech')
+  // @UseInterceptors(CacheInterceptor)
+  // async aboutTechEn(): Promise<IAbout> {
+  //   return await this.aboutTech('en', '/ve-cong-nghe');
+  // }
+  //
+  // @Get('/doi-ngu-phat-trien-chinh')
+  // @Render('about/member')
+  // @UseInterceptors(CacheInterceptor)
+  // async aboutCoreMember(language: string = 'vn', urlLang = '/en/about-core-member'): Promise<IAbout> {
+  //   const i18n = I18nContext.current()!;
+  //   const { data, dataArray } = await this.common(language, ['member']);
+  //   return {
+  //     urlLang,
+  //     ...data,
+  //     language: {
+  //       ...data.language,
+  //       page: {
+  //         Title: i18n.t(`client.page.about.member.Title`, { lang: language }),
+  //         Description: i18n.t(`client.page.about.member.Description`, { lang: language }),
+  //       },
+  //     },
+  //     JSON: {
+  //       detail: dataArray['member']
+  //         .filter((item) => item.order === null || item.order! > 5)
+  //         .map((item) => {
+  //           const translation = item.translations?.filter((subItem) => subItem.language === language)[0];
+  //
+  //           return {
+  //             ...item,
+  //             SeeMore: i18n.t('client.page.home.SeeMore', { lang: language }),
+  //             translation: {
+  //               ...translation,
+  //             },
+  //           };
+  //         }),
+  //     },
+  //   };
+  // }
+  //
+  // @Get('/en/about-core-member')
+  // @Render('about/member')
+  // @UseInterceptors(CacheInterceptor)
+  // async aboutCoreMemberEn(): Promise<IAbout> {
+  //   return await this.aboutCoreMember('en', '/doi-ngu-phat-trien-chinh');
+  // }
+  //
+  // // @Post('/')
+  // // login(@Req() req: FastifyRequest, @Res({ passthrough: true }) res: FastifyReply) {
+  // //   req.session.set('data', 'req.body');
+  // //   res.redirect(302, '/');
+  // //   return { title: 'True Foundry GitHub Authorizerss' };
+  // // }
+  //
+  // @Get('/administrator')
+  // @Render('administrator')
+  // administrator(): void {}
+  //
+  // async common(
+  //   language: string,
+  //   arrayCode: string[] = [],
+  // ): Promise<{
+  //   data: ICommon;
+  //   dataArray: { [p: string]: Data[] };
+  // }> {
+  //   const i18n = I18nContext.current()!;
+  //   const [parameter] = await this.parameterService.findAll({});
+  //   const returnParameter = {};
+  //   parameter.forEach((item) => (returnParameter[item.code] = item[language]));
+  //
+  //   const dataArray = await this.dataService.findArrayCode(['partner', ...arrayCode]);
+  //   return {
+  //     data: {
+  //       title: 'ARI TECHNOLOGY',
+  //       lang: language,
+  //       isEnglish: language == 'en',
+  //       language: {
+  //         layout: {
+  //           header: {
+  //             Location: i18n.t('client.layout.header.Location', { lang: language }),
+  //             Mail: i18n.t('client.layout.header.Mail', { lang: language }),
+  //             Call: i18n.t('client.layout.header.Call', { lang: language }),
+  //             Home: i18n.t('client.layout.header.Home', { lang: language }),
+  //             About: i18n.t('client.layout.header.About', { lang: language }),
+  //             AboutTech: i18n.t('client.layout.header.AboutTech', { lang: language }),
+  //             OurCoreTeam: i18n.t('client.layout.header.OurCoreTeam', { lang: language }),
+  //             News: i18n.t('client.layout.header.News', { lang: language }),
+  //             Projects: i18n.t('client.layout.header.Projects', { lang: language }),
+  //             ContactUs: i18n.t('client.layout.header.ContactUs', { lang: language }),
+  //             Vietnamese: i18n.t('client.layout.header.Vietnamese', { lang: language }),
+  //             English: i18n.t('client.layout.header.English', { lang: language }),
+  //           },
+  //           footer: {
+  //             PartnersAndCustomers: i18n.t('client.layout.footer.PartnersAndCustomers', { lang: language }),
+  //             OurSupportPartner: i18n.t('client.layout.footer.OurSupportPartner', { lang: language }),
+  //             Contact: i18n.t('client.layout.footer.Contact', { lang: language }),
+  //             QuestionsOrConcerns: i18n.t('client.layout.footer.QuestionsOrConcerns', { lang: language }),
+  //             FirstName: i18n.t('client.layout.footer.FirstName', { lang: language }),
+  //             LastName: i18n.t('client.layout.footer.LastName', { lang: language }),
+  //             PhoneNumber: i18n.t('client.layout.footer.PhoneNumber', { lang: language }),
+  //             Email: i18n.t('client.layout.footer.Email', { lang: language }),
+  //             Message: i18n.t('client.layout.footer.Message', { lang: language }),
+  //             SubmitNow: i18n.t('client.layout.footer.SubmitNow', { lang: language }),
+  //             OurServices: i18n.t('client.layout.footer.OurServices', { lang: language }),
+  //             DigitalTransformation: i18n.t('client.layout.footer.DigitalTransformation', { lang: language }),
+  //             RDServices: i18n.t('client.layout.footer.RDServices', { lang: language }),
+  //             OutsourcingServices: i18n.t('client.layout.footer.OutsourcingServices', { lang: language }),
+  //             ProductDevelopment: i18n.t('client.layout.footer.ProductDevelopment', { lang: language }),
+  //             UsefulLinks: i18n.t('client.layout.footer.UsefulLinks', { lang: language }),
+  //             Copyright: i18n.t('client.layout.footer.Copyright', {
+  //               lang: language,
+  //               args: { year: new Date().getFullYear() },
+  //             }),
+  //           },
+  //           validation: {
+  //             required: i18n.t('client.layout.validation.required', { lang: language }),
+  //             email: i18n.t('client.layout.validation.email', { lang: language }),
+  //             mincheck: i18n.t('client.layout.validation.mincheck', { lang: language }),
+  //           },
+  //         },
+  //       },
+  //       parameter: returnParameter,
+  //       partner: dataArray['partner'],
+  //     },
+  //     dataArray,
+  //   };
+  // }
+}
+interface ICommon {
+  title: string;
+  lang: string;
+  isEnglish: boolean;
+  language: object;
+  parameter: object;
+  partner: DataDto[];
+}
+interface IHome extends ICommon {
+  urlLang: string;
+  mission: DataDto[];
+  services: DataDto[];
+  value: DataDto[];
+  JSON: {
+    member: DataDto[];
+  };
+}
+interface IListPost extends ICommon {
+  urlLang: string;
+  post: PostDto[];
+}
+interface IPost extends ICommon {
+  urlLang: string;
+  post: PostDto[];
+  detail: object;
+}
+
+interface IAbout extends ICommon {
+  urlLang: string;
+  JSON: {
+    detail: DataDto[];
+  };
 }

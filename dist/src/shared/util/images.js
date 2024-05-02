@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getImages = exports.setImageContent = exports.setImage = void 0;
+exports.getTheDate = exports.getImages = exports.setImageContent = exports.setImage = void 0;
 const _config_1 = require("../../config");
 function setImage(value, before = true) {
     if (value) {
@@ -66,4 +66,13 @@ function getImages(images = [], data, arrayContent = [], oldData) {
     return [listFilesActive, listFilesRemove];
 }
 exports.getImages = getImages;
+function getTheDate(value) {
+    const dayjs = require('dayjs');
+    const currentDate = dayjs();
+    const threeDaysAgo = currentDate.subtract(value, 'day');
+    const formattedDate = threeDaysAgo.format('YYYY-MM-DD');
+    const formattedCurrentDate = currentDate.format('YYYY-MM-DD');
+    return `${formattedDate}/${formattedCurrentDate}`;
+}
+exports.getTheDate = getTheDate;
 //# sourceMappingURL=images.js.map

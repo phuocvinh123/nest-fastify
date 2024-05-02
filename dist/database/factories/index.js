@@ -27,9 +27,4 @@ __exportStar(require("./address.factory"), exports);
 __exportStar(require("./address-province.factory"), exports);
 __exportStar(require("./address-district.factory"), exports);
 __exportStar(require("./address-ward.factory"), exports);
-__exportStar(require("./product-category.factory"), exports);
-__exportStar(require("./product-store.factory"), exports);
-__exportStar(require("./product.factory"), exports);
-__exportStar(require("./order.factory"), exports);
-__exportStar(require("./order-product.factory"), exports);
 //# sourceMappingURL=index.js.map
