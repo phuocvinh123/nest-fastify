@@ -30,6 +30,10 @@ __exportStar(require("./module/user/model/address-ward.model"), exports);
 __exportStar(require("./module/user/model/address.model"), exports);
 __exportStar(require("./module/user/model/user.model"), exports);
 __exportStar(require("./module/user/model/user-role.model"), exports);
-__exportStar(require("./module/building/model/building.model"), exports);
-__exportStar(require("./module/building/model/room.entity"), exports);
+__exportStar(require("./module/product/model/order.model"), exports);
+__exportStar(require("./module/product/model/order-product.model"), exports);
+__exportStar(require("./module/product/model/order-address.model"), exports);
+__exportStar(require("./module/product/model/product-category.model"), exports);
+__exportStar(require("./module/product/model/product-store.model"), exports);
+__exportStar(require("./module/product/model/product.model"), exports);
 //# sourceMappingURL=model.js.map

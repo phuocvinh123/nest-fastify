@@ -30,7 +30,7 @@ export class AuthService extends BaseService<User> {
   constructor(
     public readonly repo: UserRepository,
     private readonly jwtService: JwtService,
-    private emailService: EmailService,
+    // private emailService: EmailService,
     private schedulerRegistry: SchedulerRegistry,
   ) {
     super(repo);
@@ -68,9 +68,9 @@ export class AuthService extends BaseService<User> {
       ),
       returnRefresh
         ? this.jwtService.signAsync(
-          { userId: user.id, email: user.email },
-          { secret: appConfig.REFRESH_SECRET, expiresIn: '1d' },
-        )
+            { userId: user.id, email: user.email },
+            { secret: appConfig.REFRESH_SECRET, expiresIn: '1d' },
+          )
         : '',
     ]);
 
@@ -135,7 +135,7 @@ export class AuthService extends BaseService<User> {
    *
    */
   async sendMailContact(body: ContactRequestDto): Promise<boolean> {
-    await this.emailService.sendUserContact(body);
+    // await this.emailService.sendUserContact(body);
     return true;
   }
 

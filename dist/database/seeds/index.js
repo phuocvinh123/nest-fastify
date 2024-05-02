@@ -20,4 +20,5 @@ __exportStar(require("./parameter.seeder"), exports);
 __exportStar(require("./post-type.seeder"), exports);
 __exportStar(require("./user.seeder"), exports);
 __exportStar(require("./address-province.seeder"), exports);
+__exportStar(require("./product.seeder"), exports);
 //# sourceMappingURL=index.js.map

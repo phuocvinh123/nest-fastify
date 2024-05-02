@@ -47,13 +47,32 @@ async function bootstrap(): Promise<void> {
   await app.register(secureSession, { secret: appConfig.ACCESS_SECRET, salt: appConfig.SESSION_SALT });
   app.useStaticAssets({ root: join(process.cwd(), './other', 'public') });
   hbs.registerPartials(join(process.cwd(), './other', '/views/layouts'));
+  hbs.registerPartials(join(process.cwd(), './other', '/views/partials'));
+  hbs.registerPartials(join(process.cwd(), './other', '/views/pages'));
+
+  // hbs.registerPartials(join(process.cwd(), './other', '/views/pages/home'));
+
   hbs.registerHelper('json', function (context) {
     return JSON.stringify(context);
   });
   hbs.registerHelper('raw-helper', function (options) {
     return options.fn();
   });
+
+  hbs.registerHelper('priceOfDiscount', function (price, discount) {
+    // Define your logic to determine the class based on the index
+    return Math.round(price - (price * discount) / 100);
+  });
+
+  // format currency
+  hbs.registerHelper('formatCurrency', function (price, currency) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency }).format(price);
+  });
+
   hbsUtils(hbs).registerWatchedPartials(join(process.cwd(), './other', '/views/layouts'));
+  hbsUtils(hbs).registerWatchedPartials(join(process.cwd(), './other', '/views/pages'));
+  hbsUtils(hbs).registerWatchedPartials(join(process.cwd(), './other', '/views/partials'));
+
   app.setViewEngine({
     engine: { handlebars: hbs },
     includeViewExtension: true,

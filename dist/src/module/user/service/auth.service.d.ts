@@ -2,16 +2,14 @@ import { JwtService } from '@nestjs/jwt';
 import { ContactRequestDto, ForgottenPasswordAuthRequestDto, LoginAuthRequestDto, OTPConfirmationAuthRequestDto, RegisterAuthRequestDto, RestPasswordAuthRequestDto } from '@dto';
 import { BaseService } from '@shared';
 import { User } from '@model';
-import { EmailService } from '@service';
 import { UserRepository } from '@repository';
 import { SchedulerRegistry } from '@nestjs/schedule';
 export declare const P_AUTH_DELETE_IMAGE_TEMP = "11cc566b-b109-49f8-983f-84ff08f9849e";
 export declare class AuthService extends BaseService<User> {
     readonly repo: UserRepository;
     private readonly jwtService;
-    private emailService;
     private schedulerRegistry;
-    constructor(repo: UserRepository, jwtService: JwtService, emailService: EmailService, schedulerRegistry: SchedulerRegistry);
+    constructor(repo: UserRepository, jwtService: JwtService, schedulerRegistry: SchedulerRegistry);
     updateRefreshToken(userId: string, refreshToken: string): Promise<void>;
     getTokens(user: User, returnRefresh?: boolean): Promise<{
         accessToken: string;

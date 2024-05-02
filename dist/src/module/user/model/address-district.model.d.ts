@@ -1,5 +1,5 @@
 import { Base } from '@shared';
-import { Address } from '@model';
+import { Address, OrderAddress } from '@model';
 import { AddressProvince, AddressWard } from '@model';
 export declare class AddressDistrict extends Base {
     name: string;
@@ -8,4 +8,5 @@ export declare class AddressDistrict extends Base {
     provinceItem?: AddressProvince;
     item?: Address;
     wardItem?: AddressWard[];
+    orderAddress?: OrderAddress[];
 }

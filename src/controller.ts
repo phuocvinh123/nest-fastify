@@ -16,3 +16,13 @@ export * from './module/user/controller/address-ward.controller';
 export * from './module/user/controller/address.controller';
 export * from './module/user/controller/user.controller';
 export * from './module/user/controller/user-role.controller';
+export * from './module/user/controller/address-province.controller';
+export * from './module/user/controller/address-district.controller';
+export * from './module/user/controller/address-ward.controller';
+
+export * from './module/user/controller/address.controller';
+
+export * from './module/product/controller/product-category.controller';
+export * from './module/product/controller/product.controller';
+export * from './module/product/controller/product-store.controller';
+export * from './module/product/controller/order.controller';

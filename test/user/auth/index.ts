@@ -133,8 +133,12 @@ export const testCase = (type?: string, permissions: string[] = []): void => {
     expect(body).toHaveProperty('data');
   });
 
-  it('Reset password [POST /api/auth/reset-password]', async () => {
-    await request(BaseTest.server).post('/api/auth/reset-password').send(restPassword).expect(HttpStatus.CREATED);
+  it('OTP confirmation [POST /api/auth/otp-confirmation]', async () => {
+    const { body } = await request(BaseTest.server)
+      .post('/api/auth/otp-confirmation')
+      .send({ email: login.user.email, otp: restPassword.otp })
+      .expect(HttpStatus.CREATED);
+    expect(body).toHaveProperty('data');
   });
 
   it('Reset password [GET /api/auth/logout]', async () => {

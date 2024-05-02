@@ -40,13 +40,23 @@ async function bootstrap() {
     await app.register(secure_session_1.default, { secret: _config_1.appConfig.ACCESS_SECRET, salt: _config_1.appConfig.SESSION_SALT });
     app.useStaticAssets({ root: (0, path_1.join)(process.cwd(), './other', 'public') });
     hbs_1.default.registerPartials((0, path_1.join)(process.cwd(), './other', '/views/layouts'));
+    hbs_1.default.registerPartials((0, path_1.join)(process.cwd(), './other', '/views/partials'));
+    hbs_1.default.registerPartials((0, path_1.join)(process.cwd(), './other', '/views/pages'));
     hbs_1.default.registerHelper('json', function (context) {
         return JSON.stringify(context);
     });
     hbs_1.default.registerHelper('raw-helper', function (options) {
         return options.fn();
     });
+    hbs_1.default.registerHelper('priceOfDiscount', function (price, discount) {
+        return Math.round(price - (price * discount) / 100);
+    });
+    hbs_1.default.registerHelper('formatCurrency', function (price, currency) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency }).format(price);
+    });
     (0, hbs_utils_1.default)(hbs_1.default).registerWatchedPartials((0, path_1.join)(process.cwd(), './other', '/views/layouts'));
+    (0, hbs_utils_1.default)(hbs_1.default).registerWatchedPartials((0, path_1.join)(process.cwd(), './other', '/views/pages'));
+    (0, hbs_utils_1.default)(hbs_1.default).registerWatchedPartials((0, path_1.join)(process.cwd(), './other', '/views/partials'));
     app.setViewEngine({
         engine: { handlebars: hbs_1.default },
         includeViewExtension: true,

@@ -1,4 +1,4 @@
-import { UserRole, Code, Address } from '@model';
+import { UserRole, Code, Address, ProductStore, Order } from '@model';
 import { Base } from '@shared';
 export declare class User extends Base {
     name: string;
@@ -22,4 +22,6 @@ export declare class User extends Base {
     dateLeave?: number;
     readonly dateOff: number;
     readonly address?: Address[];
+    store?: ProductStore[];
+    order?: Order;
 }

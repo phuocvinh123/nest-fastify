@@ -17,4 +17,12 @@ export * from './module/user/service/address.service';
 export * from './module/user/service/user.service';
 export * from './module/user/service/user-role.service';
 
-export * from './module/building/service/building.service';
+export * from './module/user/service/address.service';
+
+export * from './module/product/service/product.service';
+export * from './module/product/service/product-store.service';
+export * from './module/product/service/product-category.service';
+
+export * from './module/product/service/order.service';
+export * from './module/product/service/order-address.service';
+export * from './module/product/service/order-product.service';

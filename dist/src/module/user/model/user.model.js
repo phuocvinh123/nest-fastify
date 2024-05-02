@@ -195,6 +195,14 @@ __decorate([
     (0, class_transformer_1.Type)(() => _model_1.Address),
     __metadata("design:type", Array)
 ], User.prototype, "address", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => _model_1.ProductStore, (store) => store.user),
+    __metadata("design:type", Array)
+], User.prototype, "store", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => _model_1.Order, (order) => order.user),
+    __metadata("design:type", _model_1.Order)
+], User.prototype, "order", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)({ schema: 'user' })
 ], User);

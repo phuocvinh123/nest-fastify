@@ -1,4 +1,4 @@
-import { AddressDistrict, AddressProvince, AddressWard, User } from '@model';
+import { AddressDistrict, AddressProvince, AddressWard, User, OrderAddress } from '@model';
 import { Base } from '@shared';
 export declare class Address extends Base {
     codeProvince: string;
@@ -10,4 +10,5 @@ export declare class Address extends Base {
     specificAddress: string;
     userId?: string;
     readonly user: User;
+    orderAddress?: OrderAddress[];
 }

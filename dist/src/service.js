@@ -30,5 +30,11 @@ __exportStar(require("./module/user/service/address-ward.service"), exports);
 __exportStar(require("./module/user/service/address.service"), exports);
 __exportStar(require("./module/user/service/user.service"), exports);
 __exportStar(require("./module/user/service/user-role.service"), exports);
-__exportStar(require("./module/building/service/building.service"), exports);
+__exportStar(require("./module/user/service/address.service"), exports);
+__exportStar(require("./module/product/service/product.service"), exports);
+__exportStar(require("./module/product/service/product-store.service"), exports);
+__exportStar(require("./module/product/service/product-category.service"), exports);
+__exportStar(require("./module/product/service/order.service"), exports);
+__exportStar(require("./module/product/service/order-address.service"), exports);
+__exportStar(require("./module/product/service/order-product.service"), exports);
 //# sourceMappingURL=service.js.map

@@ -28,5 +28,9 @@ __exportStar(require("./module/user/dto/address-ward.dto"), exports);
 __exportStar(require("./module/user/dto/address.dto"), exports);
 __exportStar(require("./module/user/dto/user.dto"), exports);
 __exportStar(require("./module/user/dto/user-role.dto"), exports);
-__exportStar(require("./module/building/dto/building.dto"), exports);
+__exportStar(require("./module/user/dto/address.dto"), exports);
+__exportStar(require("./module/product/dto/product-category.dto"), exports);
+__exportStar(require("./module/product/dto/product.dto"), exports);
+__exportStar(require("./module/product/dto/product-store.dto"), exports);
+__exportStar(require("./module/product/dto/order.dto"), exports);
 //# sourceMappingURL=dto.js.map

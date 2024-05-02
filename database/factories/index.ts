@@ -11,3 +11,9 @@ export * from './address.factory';
 export * from './address-province.factory';
 export * from './address-district.factory';
 export * from './address-ward.factory';
+
+export * from './product-category.factory';
+export * from './product-store.factory';
+export * from './product.factory';
+export * from './order.factory';
+export * from './order-product.factory';

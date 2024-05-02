@@ -41,7 +41,6 @@ exports.UserModule = UserModule = __decorate([
         providers: [
             _shared_1.AccessTokenStrategy,
             _shared_1.RefreshTokenStrategy,
-            _service_1.EmailService,
             _service_1.AuthService,
             _repository_1.UserRepository,
             _service_1.UserService,

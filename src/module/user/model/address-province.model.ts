@@ -4,7 +4,7 @@ import { Column, Entity, OneToMany, Unique } from 'typeorm';
 import { faker } from '@faker-js/faker';
 import { IsString } from 'class-validator';
 import { Expose } from 'class-transformer';
-import { Address, AddressDistrict } from '@model';
+import { Address, AddressDistrict, OrderAddress } from '@model';
 
 @Entity({ schema: 'user' })
 @Unique(['code'])
@@ -28,4 +28,8 @@ export class AddressProvince extends Base {
   @OneToMany(() => AddressDistrict, (district) => district.provinceItem, { eager: true })
   @Expose({ groups: [MaxGroup] })
   districtItem?: AddressDistrict[];
+
+  @OneToMany(() => OrderAddress, (od) => od.codeWard, { eager: false })
+  @Expose({ groups: [MaxGroup] })
+  orderAddress?: OrderAddress[];
 }

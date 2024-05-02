@@ -44,6 +44,11 @@ __decorate([
     (0, class_transformer_1.Expose)({ groups: [_shared_1.MaxGroup] }),
     __metadata("design:type", Array)
 ], AddressProvince.prototype, "districtItem", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => _model_1.OrderAddress, (od) => od.codeWard, { eager: false }),
+    (0, class_transformer_1.Expose)({ groups: [_shared_1.MaxGroup] }),
+    __metadata("design:type", Array)
+], AddressProvince.prototype, "orderAddress", void 0);
 exports.AddressProvince = AddressProvince = __decorate([
     (0, typeorm_1.Entity)({ schema: 'user' }),
     (0, typeorm_1.Unique)(['code'])
