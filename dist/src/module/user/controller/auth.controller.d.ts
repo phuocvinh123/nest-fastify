@@ -16,4 +16,5 @@ export declare class AuthController {
     resetPassword(i18n: I18nContext, body: RestPasswordAuthRequestDto): Promise<DefaultResponsesDto>;
     logout(i18n: I18nContext, user: User): Promise<UserResponseDto>;
     sendEmailContact(i18n: I18nContext, body: ContactRequestDto): Promise<DefaultResponsesDto>;
+    download(name: string, res: any): Promise<void>;
 }

@@ -6,8 +6,6 @@ import { snakeCase } from 'typeorm/util/StringUtils';
 
 import { PaginationQueryDto, BaseRepository } from '@shared';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
-import { query } from 'winston';
-import { isNull } from 'util';
 
 export abstract class BaseService<T extends ObjectLiteral> {
   public listQuery: string[] = [];
@@ -107,51 +105,36 @@ export abstract class BaseService<T extends ObjectLiteral> {
               }
             } else if (typeof filter[key] !== 'object') {
               // /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(filter[key])
-              let checkFilter = key.split('.');
-              const listKey = filter[key].split('/');
+              const checkFilter = key.split('.');
+              let listKey = filter[key].split('/');
               const columnName = checkFilter.length > 1 ? key : `base.${key}`;
-              const condition = listKey.length > 1 ? `BETWEEN :start AND :end` : `= :${key}`;
+              const condition = listKey.length > 1 ? `BETWEEN :${key}start AND :${key}end` : `= :${key}`;
+
+              // Tạo một object để chứa các paramater
+              const params = {};
+
+              // Thêm paramater vào object params
+              if (listKey.length > 1) {
+                params[`${key}start`] = listKey[0];
+                params[`${key}end`] = listKey[1];
+              } else {
+                params[key] = filter[key];
+              }
+
+              // Xử lý các trường hợp đặc biệt khi giá trị là chuỗi rỗng
               if (filter[key] === '') {
                 qb = qb.andWhere(`${columnName} IS NOT NULL`);
-              }
-              else if (filter[key] !== '') {
-                console.log(key);
-                console.log(listKey[0] > listKey[1] && listKey[0] !== "" && listKey[1] !== "")
-                console.log(listKey[0] === "")
-                console.log(listKey[1] === "")
-                console.log(listKey)
-
-                if (listKey[0] > listKey[1] && listKey[0] !== "" && listKey[1] !== "") {
-                  console.log("vao day1");
-                  qb = qb.andWhere(`${columnName} ${condition}`, {
-                    start: listKey[1],
-                    end: listKey[0]
-                  });
-                } else if (listKey[0] === "") {
-                  console.log("de la voa day2");
-
-                  qb = qb.andWhere(`${columnName} ${condition}`, {
-                    [key]: filter[key],
-                    start: 0,
-                    end: listKey[1]
-                  });
-                } else if (listKey[1] === "") {
-                  console.log("vao day3");
-
-                  qb = qb.andWhere(`${columnName} ${condition}`, {
-                    [key]: filter[key],
-                    start: 0,
-                    end: listKey[0]
-                  });
+              } else if (filter[key] !== '') {
+                if (listKey[0] > listKey[1] && listKey[0] !== '' && listKey[1] !== '') {
+                  qb = qb.andWhere(`${columnName} ${condition}`, params);
+                } else if (listKey[0] === '') {
+                  params[`${key}start`] = 0;
+                  qb = qb.andWhere(`${columnName} ${condition}`, params);
+                } else if (listKey[1] === '') {
+                  params[`${key}end`] = 0;
+                  qb = qb.andWhere(`${columnName} ${condition}`, params);
                 } else {
-                  console.log("vao day4");
-                  console.log(`${columnName} ${condition}`);
-
-                  qb = qb.andWhere(`${columnName} ${condition}`, {
-                    [key]: filter[key],
-                    start: listKey[0],
-                    end: listKey[1]
-                  });
+                  qb = qb.andWhere(`${columnName} ${condition}`, params);
                 }
               }
             }
@@ -184,15 +167,13 @@ export abstract class BaseService<T extends ObjectLiteral> {
       );
     }
 
-    console.log(request.getQuery());
-
     if (fullTextSearch && this.listQuery.length) {
       request.andWhere(
         new Brackets((qb) => {
           this.listQuery.forEach((key) => {
             if (!filter || !filter[key]) {
-              qb = qb.orWhere(`LOWER(base.${snakeCase(key)}) LIKE LOWER(:${key})`, {
-                [key]: `%${fullTextSearch.toLowerCase()}%`,
+              qb = qb.orWhere(`base.${snakeCase(key)} like :${key}`, {
+                [key]: `%${fullTextSearch}%`,
               });
             }
           });
@@ -209,20 +190,16 @@ export abstract class BaseService<T extends ObjectLiteral> {
     let { sorts } = paginationQuery;
 
     if (typeof sorts === 'string') sorts = JSON.parse(sorts);
-    // console.log(sorts);
-
     if (sorts && Object.keys(sorts).length) {
       Object.keys(sorts).forEach((key) => {
         const checkKey = key.split('.');
         if (checkKey.length > 1) {
           request.orderBy(`${checkKey.length > 1 ? checkKey[0] + '.' + checkKey[1] : key}`, sorts![key]);
-          // }
         } else {
           request.orderBy(`${checkKey.length === 1 ? 'base.' + checkKey[0] : key}`, sorts![key]);
         }
       });
     }
-    // console.log(request.getSql());
 
     request.take(perPage || 10).skip((page !== undefined ? page - 1 : 0) * (perPage || 10));
 

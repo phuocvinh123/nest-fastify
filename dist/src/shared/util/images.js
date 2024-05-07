@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTheDate = exports.getImages = exports.setImageContent = exports.setImage = void 0;
 const _config_1 = require("../../config");
+const dayjs_1 = __importDefault(require("dayjs"));
 function setImage(value, before = true) {
     if (value) {
         if (before && value.indexOf(_config_1.appConfig.URL_FILE) === 0)
@@ -67,8 +71,7 @@ function getImages(images = [], data, arrayContent = [], oldData) {
 }
 exports.getImages = getImages;
 function getTheDate(value) {
-    const dayjs = require('dayjs');
-    const currentDate = dayjs();
+    const currentDate = (0, dayjs_1.default)();
     const threeDaysAgo = currentDate.subtract(value, 'day');
     const formattedDate = threeDaysAgo.format('YYYY-MM-DD');
     const formattedCurrentDate = currentDate.format('YYYY-MM-DD');

@@ -31,4 +31,5 @@ __exportStar(require("./module/user/service/address.service"), exports);
 __exportStar(require("./module/user/service/user.service"), exports);
 __exportStar(require("./module/user/service/user-role.service"), exports);
 __exportStar(require("./module/building/service/building.service"), exports);
+__exportStar(require("./module/building/service/room.service"), exports);
 //# sourceMappingURL=service.js.map

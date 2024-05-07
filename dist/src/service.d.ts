@@ -15,3 +15,4 @@ export * from './module/user/service/address.service';
 export * from './module/user/service/user.service';
 export * from './module/user/service/user-role.service';
 export * from './module/building/service/building.service';
+export * from './module/building/service/room.service';

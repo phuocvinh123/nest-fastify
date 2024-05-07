@@ -31,12 +31,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = exports.P_AUTH_DELETE_IMAGE_TEMP = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const argon2 = __importStar(require("argon2"));
+const aws_sdk_1 = require("aws-sdk");
 const nestjs_i18n_1 = require("nestjs-i18n");
+const mime_types_1 = __importDefault(require("mime-types"));
 const non_secure_1 = require("nanoid/non-secure");
 const _shared_1 = require("../../../shared");
 const _service_1 = require("../../../service");
@@ -130,6 +135,29 @@ let AuthService = class AuthService extends _shared_1.BaseService {
         const user = this.repo.create(body);
         const data = await this.repo.save(user);
         return data;
+    }
+    async download(name, res) {
+        try {
+            new aws_sdk_1.S3({
+                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+                region: 'ap-southeast-1',
+            }).getObject({
+                Bucket: process.env.AWS_ACCESS_BUCKET_NAME || '',
+                Key: name,
+            }, (err, data) => {
+                if (err)
+                    console.log(err.message);
+                if (data) {
+                    const buffer = Buffer.from(data.Body);
+                    res.headers({ 'Content-Type': mime_types_1.default.lookup(name) });
+                    res.send(buffer);
+                }
+            });
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
 };
 exports.AuthService = AuthService;

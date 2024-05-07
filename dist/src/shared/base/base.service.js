@@ -72,50 +72,35 @@ class BaseService {
                         }
                     }
                     else if (typeof filter[key] !== 'object') {
-                        let checkFilter = key.split('.');
-                        const listKey = filter[key].split('/');
+                        const checkFilter = key.split('.');
+                        let listKey = filter[key].split('/');
                         const columnName = checkFilter.length > 1 ? key : `base.${key}`;
-                        const condition = listKey.length > 1 ? `BETWEEN :start AND :end` : `= :${key}`;
+                        const condition = listKey.length > 1 ? `BETWEEN :${key}start AND :${key}end` : `= :${key}`;
+                        const params = {};
+                        if (listKey.length > 1) {
+                            params[`${key}start`] = listKey[0];
+                            params[`${key}end`] = listKey[1];
+                        }
+                        else {
+                            params[key] = filter[key];
+                        }
                         if (filter[key] === '') {
                             qb = qb.andWhere(`${columnName} IS NOT NULL`);
                         }
                         else if (filter[key] !== '') {
-                            console.log(key);
-                            console.log(listKey[0] > listKey[1] && listKey[0] !== "" && listKey[1] !== "");
-                            console.log(listKey[0] === "");
-                            console.log(listKey[1] === "");
-                            console.log(listKey);
-                            if (listKey[0] > listKey[1] && listKey[0] !== "" && listKey[1] !== "") {
-                                console.log("vao day1");
-                                qb = qb.andWhere(`${columnName} ${condition}`, {
-                                    start: listKey[1],
-                                    end: listKey[0]
-                                });
+                            if (listKey[0] > listKey[1] && listKey[0] !== '' && listKey[1] !== '') {
+                                qb = qb.andWhere(`${columnName} ${condition}`, params);
                             }
-                            else if (listKey[0] === "") {
-                                console.log("de la voa day2");
-                                qb = qb.andWhere(`${columnName} ${condition}`, {
-                                    [key]: filter[key],
-                                    start: 0,
-                                    end: listKey[1]
-                                });
+                            else if (listKey[0] === '') {
+                                params[`${key}start`] = 0;
+                                qb = qb.andWhere(`${columnName} ${condition}`, params);
                             }
-                            else if (listKey[1] === "") {
-                                console.log("vao day3");
-                                qb = qb.andWhere(`${columnName} ${condition}`, {
-                                    [key]: filter[key],
-                                    start: 0,
-                                    end: listKey[0]
-                                });
+                            else if (listKey[1] === '') {
+                                params[`${key}end`] = 0;
+                                qb = qb.andWhere(`${columnName} ${condition}`, params);
                             }
                             else {
-                                console.log("vao day4");
-                                console.log(`${columnName} ${condition}`);
-                                qb = qb.andWhere(`${columnName} ${condition}`, {
-                                    [key]: filter[key],
-                                    start: listKey[0],
-                                    end: listKey[1]
-                                });
+                                qb = qb.andWhere(`${columnName} ${condition}`, params);
                             }
                         }
                     }
@@ -143,13 +128,12 @@ class BaseService {
                 }
             }));
         }
-        console.log(request.getQuery());
         if (fullTextSearch && this.listQuery.length) {
             request.andWhere(new typeorm_1.Brackets((qb) => {
                 this.listQuery.forEach((key) => {
                     if (!filter || !filter[key]) {
-                        qb = qb.orWhere(`LOWER(base.${(0, StringUtils_1.snakeCase)(key)}) LIKE LOWER(:${key})`, {
-                            [key]: `%${fullTextSearch.toLowerCase()}%`,
+                        qb = qb.orWhere(`base.${(0, StringUtils_1.snakeCase)(key)} like :${key}`, {
+                            [key]: `%${fullTextSearch}%`,
                         });
                     }
                 });

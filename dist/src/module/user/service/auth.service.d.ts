@@ -24,4 +24,5 @@ export declare class AuthService extends BaseService<User> {
     resetPassword({ email, otp, ...body }: RestPasswordAuthRequestDto): Promise<boolean>;
     login(body: LoginAuthRequestDto): Promise<User>;
     register(body: RegisterAuthRequestDto): Promise<User>;
+    download(name: any, res: any): Promise<void>;
 }

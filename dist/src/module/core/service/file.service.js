@@ -44,11 +44,11 @@ const path_1 = require("path");
 const _config_1 = require("../../../config");
 const _shared_1 = require("../../../shared");
 const _repository_1 = require("../../../repository");
-exports.P_FILE_LISTED = '5d808d76-bf99-4a51-b4b6-d5aa37bdb398';
-exports.P_FILE_DETAIL = 'eb510a79-4f75-4b14-a118-f036c1daa430';
-exports.P_FILE_CREATE = 'a9574d5e-269d-44f9-a5bb-41cf06d7bdda';
-exports.P_FILE_UPDATE = '6d34b679-9c0e-489a-a2de-a17e37fadf72';
-exports.P_FILE_DELETE = 'e21ac25b-1651-443e-9834-e593789807c9';
+exports.P_FILE_LISTED = 'f5d6c0fa-f0b7-4b19-a0ae-4bad5393df4e';
+exports.P_FILE_DETAIL = '750a578a-e346-4e45-ad84-4768f5ffec62';
+exports.P_FILE_CREATE = '6828ff01-024f-426d-aa81-70cce8d02157';
+exports.P_FILE_UPDATE = '794f9edf-4d17-42ad-bf6c-374a7ad28f1a';
+exports.P_FILE_DELETE = '1ed8a391-73e3-4056-bec8-5ad272b463a0';
 let FileService = class FileService extends _shared_1.BaseService {
     constructor(repo) {
         super(repo);

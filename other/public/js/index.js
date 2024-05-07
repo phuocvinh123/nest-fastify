@@ -261,14 +261,36 @@ const y = {
         const e = document.querySelector(".mySwiper-class");
         e && (e.classList.contains("hidden") ? e.classList.remove("hidden") : e.classList.add("hidden"))
     };
-
 function A() {
-    const e = document.querySelector(".header-menu"),
-        t = document.querySelector(".registration");
-    console.log(t), window.screen.availWidth >= 992 && (t == null || t.classList.remove("fixed"), t == null || t.classList.remove("top-32")), window.scrollY > 123 && (e == null || e.classList.add("fixed"), e == null || e.classList.add("top-0"), e == null || e.classList.add("left-0"), e == null || e.classList.add("right-0"), e == null || e.classList.add("shadow-lg"), e == null || e.classList.add("bg-white"), window.screen.availWidth >= 992 && (t == null || t.classList.add("fixed"), t == null || t.classList.add("top-32"))), window.addEventListener("scroll", () => {
-        window.scrollY > 123 ? (e == null || e.classList.add("fixed"), e == null || e.classList.add("top-0"), e == null || e.classList.add("left-0"), e == null || e.classList.add("right-0"), e == null || e.classList.add("shadow-lg"), e == null || e.classList.add("bg-white"), window.screen.availWidth >= 992 ? (t == null || t.classList.add("fixed"), t == null || t.classList.add("top-32")) : (t == null || t.classList.remove("fixed"), t == null || t.classList.remove("top-32")), window.scrollY > 1700 && (t == null || t.classList.remove("fixed"), t == null || t.classList.remove("top-32"))) : (e == null || e.classList.remove("fixed"), e == null || e.classList.remove("top-0"), e == null || e.classList.remove("left-0"), e == null || e.classList.remove("right-0"), e == null || e.classList.remove("shadow-lg"), e == null || e.classList.remove("bg-white"), t == null || t.classList.remove("fixed"), t == null || t.classList.remove("top-32"))
-    })
+    const navMenu = document.querySelector('.header-menu');
+    const registration = document.querySelector('.registration');
+
+    function handleScroll() {
+        const scrollY = window.scrollY;
+        const isDesktop = window.screen.availWidth >= 992;
+        const maxScroll = (document.documentElement.scrollHeight - window.innerHeight) * 11 / 12;
+
+        if (scrollY > 123) {
+            navMenu?.classList.add('fixed', 'top-0', 'left-0', 'right-0', 'shadow-lg', 'bg-white', 'border-b-2');
+            if (isDesktop) {
+                registration?.classList.add('fixed', 'top-32');
+            }
+            else {
+                registration?.classList.remove('fixed', 'top-32');
+            }
+            if (scrollY > maxScroll) {
+                registration?.classList.remove('fixed', 'top-32');
+            }
+        }
+        else {
+            navMenu?.classList.remove('fixed', 'top-0', 'left-0', 'right-0', 'shadow-lg', 'bg-white', 'border-b-2');
+            registration?.classList.remove('fixed', 'top-32');
+        }
+    }
+    handleScroll();
+    window.addEventListener('scroll', handleScroll);
 }
+
 const g = (e, t) => {
     const n = gsap.timeline({
         delay: t,
@@ -392,31 +414,12 @@ window._MESSAGE_ = {
     maxLength: "Xin vui lòng nhập không quá ",
     compare: "Xin vui lòng nhập không quá "
 };
-document.addEventListener("DOMContentLoaded", function () {
-    const e = document.getElementById("arrow-icon"),
-        t = document.getElementById("dropdown-select");
-    e == null || e.addEventListener("click", function () {
-        t == null || t.classList.toggle("open")
-    });
-    const n = document.getElementById("play-image"),
-        i = document.getElementById("video-iframe");
-    n !== null && i !== null && (n.style.display = "none", i.addEventListener("click", function () {
-        n.style.display = "block", i.style.display = "none", console.log("aaaaaaa")
-    }), n.addEventListener("click", function () {
-        n.style.display = "none", i.style.display = "block", console.log("bbbbbb")
-    }), i.addEventListener("pause", function () {
-        n.style.display = "block", console.log("Video paused")
-    }))
-});
-const f = document.querySelector(".btn-show-image");
-f == null || f.addEventListener("click", _);
-
 function changeAddressSelect() {
-    const provinceSelect = document.getElementById('selectAddress');
+    const provinceSelect = document.getElementById('selectAddressMain');
     if (provinceSelect) {
         provinceSelect.addEventListener('change', function () {
             const selectedProvince = provinceSelect.value;
-            window.location.href = `http://localhost:3000/?address=${selectedProvince}`;
+            window.location.href = `/?address=${selectedProvince}`;
         });
         window.onload = function () {
             const urlParams = new URLSearchParams(window.location.search);
@@ -440,7 +443,7 @@ const filter = () => {
     const selectYear = document.getElementById('selectYear');
     const btnFilter = document.getElementById('buttonFilter')
 
-    if (search || selectAddress || selectType || selectAcreage || selectRoomNumber) {
+    if (search || selectAddress || selectType || selectAcreage || selectRoomNumber || btnFilter) {
         btnFilter.addEventListener('click', () => {
             const selectPriceMin = document.querySelector('input[name="lowPrice"]:checked').value;
             const selectPriceMax = document.querySelector('input[name="highPrice"]:checked').value;
@@ -467,7 +470,7 @@ const filter = () => {
                 sort: ""
             });
             window.location.href = `
-                http://localhost:3000/detail3?${paginableParams.toString()}
+                /buildingList?${paginableParams.toString()}
             `;
         })
 
@@ -524,28 +527,35 @@ const filter = () => {
             if (filterObject.acreage) {
                 setValueIfExists(selectAcreage, `option[value="${filterObject.acreage}"]`, filterObject.acreage);
             }
-            if (filterObject.roomNumber) {
-                setValueIfExists(selectRoomNumber, `option[value="${filterObject.roomNumber}"]`, filterObject.roomNumber);
+            console.log(filterObject.bedroomTotal);
+
+            if (filterObject.bedroomTotal) {
+                setValueIfExists(selectRoomNumber, `option[value="${filterObject.bedroomTotal}"]`, filterObject.bedroomTotal);
             }
         }
     }
 }
 
 function togglePriceRadio() {
-    document.getElementById("priceRange")?.addEventListener("click", function (event) {
-        event.preventDefault();
-        var priceRadio = document.getElementById("pricetable");
-        if (priceRadio.style.display === "none") {
-            priceRadio.style.display = "block";
-            priceRadio.style.top = "50px";
-        } else {
-            priceRadio.style.display = "none";
-            priceRadio.style.display = "none";
-        }
-    });
+    const value = document.getElementById("priceRange");
+    if (value) {
+        value.addEventListener("click", function (event) {
+            event.preventDefault();
+            var priceRadio = document.getElementById("pricetable");
+            if (priceRadio.style.display === "none") {
+                priceRadio.style.display = "block";
+                priceRadio.style.top = "50px";
+            } else {
+                priceRadio.style.display = "none";
+                priceRadio.style.display = "none";
+            }
+        });
+    }
+
 }
+
 A();
-C();
 changeAddressSelect();
 filter();
 togglePriceRadio();
+C();

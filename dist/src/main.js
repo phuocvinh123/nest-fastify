@@ -40,6 +40,9 @@ async function bootstrap() {
     await app.register(secure_session_1.default, { secret: _config_1.appConfig.ACCESS_SECRET, salt: _config_1.appConfig.SESSION_SALT });
     app.useStaticAssets({ root: (0, path_1.join)(process.cwd(), './other', 'public') });
     hbs_1.default.registerPartials((0, path_1.join)(process.cwd(), './other', '/views/layouts'));
+    hbs_1.default.registerPartials((0, path_1.join)(process.cwd(), './other', '/views/partials'));
+    hbs_1.default.registerPartials((0, path_1.join)(process.cwd(), './other', '/views/pages'));
+    hbs_1.default.registerPartials((0, path_1.join)(process.cwd(), './other', '/views/detail2'));
     hbs_1.default.registerHelper('json', function (context) {
         return JSON.stringify(context);
     });
@@ -47,6 +50,9 @@ async function bootstrap() {
         return options.fn();
     });
     (0, hbs_utils_1.default)(hbs_1.default).registerWatchedPartials((0, path_1.join)(process.cwd(), './other', '/views/layouts'));
+    (0, hbs_utils_1.default)(hbs_1.default).registerWatchedPartials((0, path_1.join)(process.cwd(), './other', '/views/pages'));
+    (0, hbs_utils_1.default)(hbs_1.default).registerWatchedPartials((0, path_1.join)(process.cwd(), './other', '/views/partials'));
+    (0, hbs_utils_1.default)(hbs_1.default).registerWatchedPartials((0, path_1.join)(process.cwd(), './other', '/views/detail2'));
     app.setViewEngine({
         engine: { handlebars: hbs_1.default },
         includeViewExtension: true,

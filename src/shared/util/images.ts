@@ -1,4 +1,5 @@
 import { appConfig } from '@config';
+import dayjs from 'dayjs';
 
 export function setImage(value?: string, before = true): string | undefined {
   if (value) {
@@ -65,8 +66,8 @@ export function getImages<T>(
 
   return [listFilesActive, listFilesRemove];
 }
-export function getTheDate(value: number) {
-  const dayjs = require('dayjs');
+
+export function getTheDate(value: number): string {
   const currentDate = dayjs();
   const threeDaysAgo = currentDate.subtract(value, 'day');
   const formattedDate = threeDaysAgo.format('YYYY-MM-DD');

@@ -129,6 +129,9 @@ let AuthController = class AuthController {
             message: i18n.t('common.Success'),
         };
     }
+    async download(name, res) {
+        return await this.authService.download(name, res);
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -266,6 +269,18 @@ __decorate([
         _dto_1.ContactRequestDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "sendEmailContact", null);
+__decorate([
+    (0, _shared_1.Public)({
+        summary: 'Download',
+    }),
+    (0, common_1.Get)('download'),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Query)('key')),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "download", null);
 exports.AuthController = AuthController = __decorate([
     (0, _shared_1.Headers)('auth'),
     __metadata("design:paramtypes", [_service_1.AuthService])
